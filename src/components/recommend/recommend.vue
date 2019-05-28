@@ -1,12 +1,12 @@
 <template>
     <div class="recommend">
-        <div class="recommend-content">
+        <scroll ref="scroll" class="recommend-content" :data="discList">
             <div>
                 <div v-if="recommends.length" class="slider-wrapper">
                     <slider>
                         <div v-for="(item, index) in recommends" :key="item.index">
                             <a :href="item.linkUrl">
-                                <img :src="item.picUrl" alt="">
+                                <img class="needsclick" :src="item.picUrl" @load="loadImage">
                             </a>
                         </div>
                     </slider>
@@ -16,7 +16,7 @@
                     <ul>
                         <li v-for="item in discList" class="item">
                             <div class="icon">
-                                <img width="60" height="60"  :src="item.imgurl">
+                                <img width="60" height="60"  v-lazy="item.imgurl">
                             </div>
                             <div class="text">
                                 <h2 class="name" v-html="item.creator.name"></h2>
@@ -26,12 +26,13 @@
                     </ul>
                 </div>
             </div>
-        </div>
+        </scroll>
     </div>
 </template>
 
 <script>
     import Slider from 'base/slider/slider'
+    import Scroll from 'base/scroll/scroll'
     import { getRecommend, getDiscList } from 'api/recommend'
     import {ERR_OK} from 'api/config'
 
@@ -62,10 +63,19 @@
                     }
                     console.log(49, this.discList[0]);
                 })
+            },
+            //图片加载处理
+            loadImage() {
+                if(!this.checkloaded) {
+                    console.log(7373)
+                    this.$refs.scroll.refresh()
+                    this.checkloaded = true
+                }
             }
         },
         components: {
-            Slider
+            Slider,
+            Scroll
         }
     }
 </script>
