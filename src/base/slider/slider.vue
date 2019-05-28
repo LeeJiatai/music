@@ -160,9 +160,9 @@
                 height: 8px
                 border-radius: 50%
                 background: $color-text-l
-                transition: width .5ss
+                transition: width .5s
                 &.active
-                    width: 16px
+                    width: 12px
                     border-radius: 5px
                     background: $color-text-ll
 
