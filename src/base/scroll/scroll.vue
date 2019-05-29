@@ -20,6 +20,10 @@
             data: {
                 type: Array,
                 default: null
+            },
+            listenScroll: {
+                type: Boolean,
+                default: false
             }
         },
         mounted() {
@@ -32,10 +36,21 @@
                 if (!this.$refs.wrapper) {
                     return
                 }
+
                 this.scroll = new BScroll(this.$refs.wrapper, {
                     probeType: this.probeType,
                     click: this.click
-                });
+                })
+                console.log(44, this.listenScroll)
+                if(this.listenScroll) {
+                    console.log(46)
+                    let me = this;
+                    this.scroll.on('scroll', (pos) => {
+                        console.log(49)
+                        me.$emit('scroll', pos);
+                        console.log(51)
+                    })
+                }
             },
             enable() {
                 this.scroll && this.scroll.enable()
@@ -45,6 +60,12 @@
             },
             refresh() {
                 this.scroll && this.scroll.refresh()
+            },
+            scrollTo() {
+                this.scroll && this.scroll.scrollTo.apply(this.scroll, arguments)
+            },
+            scrollToElement() {
+                this.scroll && this.scroll.scrollToElement.apply(this.scroll, arguments)
             }
         },
         watch: {
