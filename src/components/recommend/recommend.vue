@@ -26,6 +26,9 @@
                     </ul>
                 </div>
             </div>
+            <div class="loading-container" v-if="!discList.length">
+                <loading></loading>
+            </div>
         </scroll>
     </div>
 </template>
@@ -33,6 +36,7 @@
 <script>
     import Slider from 'base/slider/slider'
     import Scroll from 'base/scroll/scroll'
+    import Loading from 'base/loading/loading'
     import { getRecommend, getDiscList } from 'api/recommend'
     import {ERR_OK} from 'api/config'
 
@@ -61,13 +65,11 @@
                     if(res.code === ERR_OK) {
                         this.discList = res.data.list
                     }
-                    console.log(49, this.discList[0]);
                 })
             },
             //图片加载处理
             loadImage() {
                 if(!this.checkloaded) {
-                    console.log(7373)
                     this.$refs.scroll.refresh()
                     this.checkloaded = true
                 }
@@ -75,7 +77,8 @@
         },
         components: {
             Slider,
-            Scroll
+            Scroll,
+            Loading
         }
     }
 </script>
@@ -91,6 +94,7 @@
         .recommend-content 
             height: 100%
             overflow: hidden
+            border: 1px solid blue
             .slider-wrapper 
                 position: relative
                 width: 100%
@@ -126,4 +130,9 @@
                             color: $color-text
                         .desc
                             color: $color-text-d
+            .loading-container 
+                position: absolute
+                width: 100%
+                top: 50%
+                transform: translateY(-50%)
 </style>
