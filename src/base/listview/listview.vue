@@ -30,8 +30,8 @@
 <script>
     import Scroll from 'base/scroll/scroll' 
     import { getData } from 'common/js/dom'
-    const TITLE_HEIGHT = 30
-    const ANCHOR_HEIGHT = 18
+    const TITLE_HEIGHT = 30 //标签高度
+    const ANCHOR_HEIGHT = 18 //侧边栏标签高度
 
     export default {
         props: {
