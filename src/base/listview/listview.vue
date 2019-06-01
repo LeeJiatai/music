@@ -5,6 +5,7 @@
         @scroll="scroll"
         :listen-scroll="listenScroll"
         :probeType="probeType"
+        :data='data'
     >
         <ul>
             <li v-for="group in data" class="list-group" ref="listGroup">
@@ -40,19 +41,52 @@
         },
         data() {
             return {
-                currentIndex: 0
+                currentIndex: 0,
+                scrollY: -1
             }
         },
         created() {
             this.touch = {};
             this.listenScroll = true //监听滚动
-            this.probeType = 3  //限制截流
+            this.probeType = 3  //取消scroll组件限制截流
+            this.listHeight = []
         },
         computed: {
             shortcutList() {
                 return this.data.map((group) => {
                     return group.title.substr(0, 1)
                 })
+            }
+        },
+        watch: {
+            data() {
+                setTimeout(() => {
+                    this._calculateHeight();
+                }, 20)
+            },
+            scrollY(newY) {
+                console.log(68, newY);
+                let listHeight = this.listHeight;
+
+                //当在顶部向上滚动
+                if(newY > 0) {
+                    this.currentIndex = 0;
+                    return;
+                }
+
+                //当在中间滚动
+                for(let i = 0; i < listHeight.length - 1; i++) {
+                    let height1 = listHeight[i];
+                    let height2 = listHeight[i + 1];
+                    if(-newY >= height1 && -newY < height2) {
+                        this.currentIndex = i;
+                        return 
+                    }
+                }
+
+                //当滚动到底部，且newY大于最后一个元素的上限
+                this.currentIndex = this.listHeight.length - 2;
+                console.log(89, currentIndex);
             }
         },
         methods: {
@@ -75,9 +109,22 @@
                 this.$refs.listview.scrollToElement(this.$refs.listGroup[index], 0)
             },
             scroll(pos) {
-                console.log(74, pos)
                 this.scrollY = pos.y
             },
+            refresh() {
+                this.$refs.listview.refresh()
+            },
+            _calculateHeight() {
+                this.listHeight = [];
+                const list = this.$refs.listGroup;
+                let height = 0;
+                this.listHeight.push(height);
+                for(let i = 0; i < list.length; i++) {
+                    let item = list[i];
+                    height += item.clientHeight;
+                    this.listHeight.push(height);
+                }
+            }
         },
         components: {
             Scroll

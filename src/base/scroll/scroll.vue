@@ -41,14 +41,10 @@
                     probeType: this.probeType,
                     click: this.click
                 })
-                console.log(44, this.listenScroll)
                 if(this.listenScroll) {
-                    console.log(46)
                     let me = this;
                     this.scroll.on('scroll', (pos) => {
-                        console.log(49)
                         me.$emit('scroll', pos);
-                        console.log(51)
                     })
                 }
             },
