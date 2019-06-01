@@ -85,5 +85,4 @@
         top: 88px
         width: 100%
         bottom: 0
-        border: 1px solid blue
 </style>

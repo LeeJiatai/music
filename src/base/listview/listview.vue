@@ -25,7 +25,10 @@
                 </li>
             </ul>
         </div>
-    </scroll>
+        <div class="list-fixed" v-show="fixedTitle" ref="fixed">
+            <div class="fixed-title">{{fixedTitle}}</div>
+        </div>
+    </scroll> 
 </template>
 
 <script>
@@ -42,7 +45,8 @@
         data() {
             return {
                 currentIndex: 0,
-                scrollY: -1
+                scrollY: -1,
+                diff: -1
             }
         },
         created() {
@@ -56,6 +60,12 @@
                 return this.data.map((group) => {
                     return group.title.substr(0, 1)
                 })
+            },
+            fixedTitle() {
+                if(this.scrollY > 0) {
+                    return ''
+                }
+                return this.data[this.currentIndex] ? this.data[this.currentIndex].title : ''
             }
         },
         watch: {
@@ -65,7 +75,6 @@
                 }, 20)
             },
             scrollY(newY) {
-                console.log(68, newY);
                 let listHeight = this.listHeight;
 
                 //当在顶部向上滚动
@@ -80,13 +89,21 @@
                     let height2 = listHeight[i + 1];
                     if(-newY >= height1 && -newY < height2) {
                         this.currentIndex = i;
+                        this.diff = height2 + newY;
                         return 
                     }
                 }
 
                 //当滚动到底部，且newY大于最后一个元素的上限
                 this.currentIndex = this.listHeight.length - 2;
-                console.log(89, currentIndex);
+            },
+            diff(newVal) {
+                let fixedTop = (newVal > 0 && newVal < TITLE_HEIGHT) ? newVal - TITLE_HEIGHT : 0;
+                if(this.fixedTop === fixedTop) {
+                    return
+                }
+                this.fixedTop = fixedTop;
+                this.$refs.fixed.style.transform = `translate3d(0, ${fixedTop}px, 0)`;
             }
         },
         methods: {
@@ -106,6 +123,16 @@
                 
             },
             _ScrollTo(index) {
+                if(!index && index !== 0) {
+                    return;
+                }
+                
+                if(index < 0) {
+                    index = 0
+                } else if(index > this.listHeight.length - 2) {
+                    index = this.listHeight.length - 2
+                }
+                this.scrollY = -this.listHeight[index]
                 this.$refs.listview.scrollToElement(this.$refs.listGroup[index], 0)
             },
             scroll(pos) {
@@ -182,6 +209,18 @@
                 font-size: $font-size-small
                 &.current
                     color: $color-theme
+        .list-fixed
+            position: absolute
+            top: 0
+            left: 0
+            width: 100%
+            .fixed-title 
+                height: 30px
+                line-height: 30px
+                padding-left: 20px
+                font-size: $font-size-small
+                color: $color-text-l
+                background-color: $color-highlight-background
 
 
 </style>
