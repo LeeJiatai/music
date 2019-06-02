@@ -1,20 +1,66 @@
 <template>
     <transition name="slide">
-        <div class="singer-detail">Hello</div>
+        <music-list :title="title" :bg-image="bgImage" :songs="songs"></music-list>
     </transition>
 </template>
 
 <script>
+    import MusicList from 'components/music-list/music-list' 
     import { mapGetters } from 'vuex'
-
+    import { getSingerDetail } from 'api/singer'
+    import { ERR_OK } from 'api/config'
+    import { createSong } from 'common/js/song'
+ 
     export default {
+        data() {
+            return {
+                songs: []
+            }
+        },
         computed: {
             ...mapGetters([
                 'singer'
-            ])
+            ]),
+            title() {
+                return this.singer.name
+            },
+            bgImage() {
+                return this.singer.avatar
+            }
         },
         created() {
-            console.log(17, this.singer)
+            console.log(29, this.singer)
+            this._getDetail()
+        },
+        methods: {
+            _getDetail() {
+                console.log(2323, this.singer.id);
+                if(!this.singer.id) {
+                    this.$router.push({
+                        path: '/singer'
+                    })
+                    return
+                }
+                getSingerDetail(this.singer.id).then((res) => {
+                    if(res.code === ERR_OK) {
+                        this.songs = res.data.list;
+                    }
+                })
+            },
+            //格式化歌单数据
+            _normallizeSongs(list) {
+                let ret = [];
+                list.forEach((item) => {
+                    let {musicData} = item;
+                    if(musicData.songid && musicData.albummid) {
+                        ret.push(createSong(musicData));
+                    }
+                });
+                return ret
+            }
+        },
+        components: {
+            MusicList,
         }
     }
 </script>
@@ -26,13 +72,5 @@
         transition: all .5s
     .slide-enter, .slide-leave-to 
         transition: translated3d(100%, 0, 0)
-    .singer-detail 
-        position: fixed
-        z-index: 100
-        top: 0
-        left: 0
-        right: 0
-        bottom: 0
-        background-color: $color-background
 </style>
 
