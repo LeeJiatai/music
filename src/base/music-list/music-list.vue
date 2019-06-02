@@ -15,7 +15,7 @@
         </div>
         <scroll class="list">
             <div class="song-list-wrapper">
-                <song-list :songs="songs"></song-list>
+
             </div>
         </scroll>
     </div>
