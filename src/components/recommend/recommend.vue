@@ -94,7 +94,6 @@
         .recommend-content 
             height: 100%
             overflow: hidden
-            border: 1px solid blue
             .slider-wrapper 
                 position: relative
                 width: 100%
