@@ -11,7 +11,7 @@
             <li v-for="group in data" class="list-group" ref="listGroup">
                 <h2 class="list-group-title">{{group.title}}</h2>
                 <ul>
-                    <li v-for="item in group.items" class="list-group-item">
+                    <li @click="selectItem(item)" v-for="item in group.items" class="list-group-item">
                         <img class="avatar" v-lazy="item.avatar">
                         <span class="name">{{item.name}}</span>
                     </li>
@@ -28,11 +28,15 @@
         <div class="list-fixed" v-show="fixedTitle" ref="fixed">
             <div class="fixed-title">{{fixedTitle}}</div>
         </div>
+        <div class="loading-container" v-show="!data.length">
+            <loading></loading>
+        </div>
     </scroll> 
 </template>
 
 <script>
     import Scroll from 'base/scroll/scroll' 
+    import Loading from 'base/loading/loading'
     import { getData } from 'common/js/dom'
     const TITLE_HEIGHT = 30 //标签高度
     const ANCHOR_HEIGHT = 18 //侧边栏单个标签高度
@@ -151,10 +155,15 @@
                     height += item.clientHeight;
                     this.listHeight.push(height);
                 }
+            },
+            selectItem(item) {
+                console.log(156156);
+                this.$emit('select', item)
             }
         },
         components: {
-            Scroll
+            Scroll, 
+            Loading
         }
     }
 </script>
@@ -221,6 +230,11 @@
                 font-size: $font-size-small
                 color: $color-text-l
                 background-color: $color-highlight-background
+        .loading-container
+            position: absolute
+            width: 100%
+            top: 50%
+            transform: translateY(-50%)
 
 
 </style>
