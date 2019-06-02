@@ -40,6 +40,7 @@
         methods: {
             back() {
                 console.log(27)
+                this.$router.back()
             }
         },
         data() {
