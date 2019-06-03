@@ -1,10 +1,10 @@
 <template>
     <div class="song-list">
         <ul>
-            <li class="item" v-for="item in songs">
+            <li class="item" v-for="song in songs">
                 <div class="content">
-                    <h2 class="name">{{item.name}}</h2>
-                    <p class="desc">{{getDesc(item)}}</p>
+                    <h2 class="name">{{song.name}}</h2>
+                    <p class="desc">{{getDesc(song)}}</p>
                 </div>
             </li>
         </ul>
@@ -20,7 +20,7 @@
             }
         },
         created() {
-            console.log(23, this.songs)
+            console.log(23, this.songs, 'here')
         },
         methods: {
             getDesc(song) {
@@ -34,14 +34,13 @@
     @import '~common/stylus/variable'
     @import '~common/stylus/mixin'
 
-    .song-list 
-        .item
+    .song-list
+        .item 
             display: flex
             align-items: center
             height: 64px
             font-size: $font-size-medium
-            border: 1px solid red
-            .content 
+            .content
                 flex: 1
                 line-height: 20px
                 overflow: hidden
@@ -51,5 +50,5 @@
                 .desc 
                     no-wrap()
                     margin-top: 4px
-                    color: $color-text-l 
+                    color: $color-text-d
 </style>

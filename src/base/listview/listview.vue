@@ -157,7 +157,6 @@
                 }
             },
             selectItem(item) {
-                console.log(156156);
                 this.$emit('select', item)
             }
         },

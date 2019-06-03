@@ -5,7 +5,7 @@
 </template>
 
 <script>
-    import MusicList from 'components/music-list/music-list' 
+    import MusicList from 'components/music-list/music-list'
     import { mapGetters } from 'vuex'
     import { getSingerDetail } from 'api/singer'
     import { ERR_OK } from 'api/config'
@@ -29,12 +29,10 @@
             }
         },
         created() {
-            console.log(29, this.singer)
             this._getDetail()
         },
         methods: {
             _getDetail() {
-                console.log(2323, this.singer.id);
                 if(!this.singer.id) {
                     this.$router.push({
                         path: '/singer'
@@ -43,7 +41,7 @@
                 }
                 getSingerDetail(this.singer.id).then((res) => {
                     if(res.code === ERR_OK) {
-                        this.songs = res.data.list;
+                        this.songs = this._normallizeSongs(res.data.list);
                     }
                 })
             },

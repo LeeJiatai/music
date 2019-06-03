@@ -23,7 +23,6 @@
 
 <script>
     import Scroll from 'base/scroll/scroll'
-    import SongList from 'base/song-list/song-list'
 
     export default {
         props: {
@@ -46,7 +45,7 @@
             }
         },
         created() {
-            console.log(37, this.title, this.songs, this.bgImage)
+            console.log(49, 'here');
         },
         computed: {
             bgStyle() {
@@ -59,8 +58,7 @@
             }
         },
         components: {
-            Scroll,
-            SongList
+            Scroll
         }
     }
 </script>
@@ -134,13 +132,10 @@
                 left: 0
                 width: 100%
                 height: 100%
-                background: rgba(7, 17, 27, 0.4)     
-                border: 1px solid blue 
-        .list 
-            border: 1px solid red
+                background: rgba(7, 17, 27, 0.4)
+        .list
             .song-list-wrapper
                 padding: 20px 30px
-                border: 1px solid blue
             .loading-container 
                 position: absolute
                 width: 100%

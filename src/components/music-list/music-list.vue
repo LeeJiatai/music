@@ -15,7 +15,7 @@
         </div>
         <scroll class="list">
             <div class="song-list-wrapper">
-                <song-list :songs="songs"></song-list>
+               <song-list :songs="songs"></song-list>
             </div>
         </scroll>
     </div>
@@ -46,7 +46,7 @@
             }
         },
         created() {
-            console.log(37, this.title, this.songs, this.bgImage)
+            console.log(49, this.songs)
         },
         computed: {
             bgStyle() {
