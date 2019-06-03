@@ -20,7 +20,7 @@
             }
         },
         created() {
-            console.log(23, this.songs, 'here')
+            
         },
         methods: {
             getDesc(song) {
