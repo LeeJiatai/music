@@ -169,6 +169,7 @@
       top: 0
       bottom: 0
       width: 100%
+      overflow: hidden
       background: $color-background
       border: 1px solid #ffffff
       .song-list-wrapper

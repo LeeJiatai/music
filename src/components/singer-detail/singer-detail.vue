@@ -65,10 +65,9 @@
 
 <style scoped lang="stylus" rel="styleshhet/stylus">
     @import '~common/stylus/variable'
-
-    .slide-enter-active, .slide-leave-active 
-        transition: all .5s
+    .slide-enter-active, .slide-leave-active
+        transition: all 0.5s
     .slide-enter, .slide-leave-to 
-        transition: translated3d(100%, 0, 0)
+        transform: translate3d(100%, 0, 0)
 </style>
 
