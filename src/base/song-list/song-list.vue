@@ -19,9 +19,6 @@
                 default: []
             }
         },
-        created() {
-            
-        },
         methods: {
             getDesc(song) {
                 return `${song.singer}·${song.album}`

@@ -5,15 +5,15 @@
 		</div>
 		<h1 class="title" v-html="title"></h1>
 		<div class="bg-image" :style="bgStyle" ref="bgImage">
-			<div class="paly-wrapper">
+			<!-- <div class="paly-wrapper">
 				<div class="play">
 				<i class="icon-play"></i>
 				<span class="text">随机播放全部</span>
 				</div>
-			</div>
-			<div class="filter"></div>
+			</div> -->
+			<div class="filter" ref="filter"></div>
 		</div>
-			<div class="bg-layer"></div>
+    <div class="bg-layer" ref="layer"></div>
 		<scroll 
 			:data="songs"
 			:listenScroll="listenScroll" 
@@ -61,6 +61,7 @@
 		},
 		mounted() {
 			this.imageHeight = this.$refs.bgImage.clientHeight
+      this.minTranslateY = -this.imageHeight + RESERVED_HEIGHT
 			this.$refs.list.$el.style.top = `${this.imageHeight}px`
 		},
 		created() {
@@ -77,10 +78,43 @@
 				this.$router.back()
 			},
 			scroll(pos) {
-				console.log(79, pos)
 				this.scrollY = pos.y   
 			}
 		},
+    watch: {
+      scrollY(newVal) {
+        let translateY = Math.max(this.minTranslateY, newVal);
+        let zIndex = 0;
+        let scale = 1;
+        let blur = 0;
+        let percent = Math.abs(newVal / this.imageHeight);
+
+        if(newVal > 0) {
+          scale = 1 + percent
+          zIndex = 10
+        } else {
+          blur = Math.min(20, percent * 20)
+        }
+
+        console.log(101, scale, percent, blur)
+
+        this.$refs.layer.style['transform'] = `translate3d(0, ${translateY}px, 0)`
+        this.$refs.layer.style['webkitTransform'] = `translate3d(0, ß${translateY}px, 0)`
+        this.$refs.filter.style['backdrop'] = `blur(${blur}px)`
+
+        if(newVal < this.minTranslateY) {
+          zIndex = 10;
+          this.$refs.bgImage.style.paddingTop = 0;
+          this.$refs.bgImage.style.height = `${RESERVED_HEIGHT}px`;
+        } else {
+          this.$refs.bgImage.style.paddingTop = `70%`;
+          this.$refs.bgImage.style.height = 0
+        }
+        this.$refs.bgImage.style.zIndex = zIndex;
+        this.$refs.bgImage.style['transform'] = `scale(${scale})`
+        
+      }
+    },
 		components: {
 			Scroll, 
 			SongList, 
@@ -152,14 +186,14 @@
             display: inline-block
             vertical-align: middle
             font-size: $font-size-small
-        .filter 
-          position: absolute  
-          top: 0
-          left: 0
-          width: 100%
-          height: 100%
-          border: 1px solid red 
-          background: rgba(7, 17, 27, 0.4)
+      .filter 
+        position: absolute
+        top: 0
+        left: 0
+        width: 100%
+        height: 100%
+        background: rgba(7, 17, 27, 0.4)
+        border: 1px solid red
     .bg-layer 
       position: relative
       height: 100%
@@ -169,12 +203,9 @@
       top: 0
       bottom: 0
       width: 100%
-      overflow: hidden
       background: $color-background
-      border: 1px solid #ffffff
       .song-list-wrapper
         padding: 20px 30px
-        border: 1px solid red
       .loading-container
         position: absolute 
         width: 100%
