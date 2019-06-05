@@ -42,8 +42,6 @@
   const transform = preFixStyle('transform')
   const backdrop = preFixStyle('backdrop-filter')
 
-  console.log(44, preFixStyle('backdrop-filter'))
-
 	export default {
 		props: {
 			bgImage: {
@@ -217,11 +215,5 @@
         width: 100%
         top: 50%
         transform: translateY(-50%)
-
-      
-      
-
-
-
 </style>
 
