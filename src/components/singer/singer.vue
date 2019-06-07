@@ -78,7 +78,6 @@
                 this.$router.push({
                     path: `/singer/${singer.id}`
                 });
-                console.log(81, this.setSinger)
                 this.setSinger(singer)
             },
             ...mapMutations({

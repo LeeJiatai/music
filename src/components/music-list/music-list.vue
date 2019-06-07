@@ -71,7 +71,6 @@
 		created() {
 			this.probeType = 3
       this.listenScroll = true
-      console.log(74, this.selectPlay)
 		},
 		computed: {
 			bgStyle() {
@@ -208,7 +207,6 @@
         width: 100%
         height: 100%
         background: rgba(7, 17, 27, 0.4)
-        border: 1px solid red
     .bg-layer 
       position: relative
       height: 100%
