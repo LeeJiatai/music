@@ -22,7 +22,7 @@
 					<div class="middle-l">
 						<div class="cd-wrapper" ref="cdWrapper">
 							<div class="cd">
-								<img class="image" :src="currentSong.image" alt="">
+								<img class="image" :class="cdCls" :src="currentSong.image" alt="">
 							</div>
 						</div>
 						<div class="playing-lyric-wrapper">
@@ -57,7 +57,7 @@
 							<i class="icon-prev"></i>
 						</div>
 						<div class="icon i-center">
-							<i class="icon-play"></i>
+							<i @click="togglePlaying" :class="playIcon"></i>
 						</div>
 						<div class="icon i-right">
 							<i class="icon-next"></i>
@@ -72,18 +72,21 @@
 		<transition class="mini">
 			<div class="mini-player" v-show="!fullScreen" @click="open">
 				<div class="icon">
-					<img :src="currentSong.image" alt="">
+					<img :class="cdCls" :src="currentSong.image" alt="">
 				</div>
 				<div class="text">
 					<h2 class="name" v-html="currentSong.name"></h2>
 					<p class="desc" v-html="currentSong.singer"></p>
 				</div>
-				<div class="control"></div>
+				<div class="control">
+					<i @click.stop="togglePlaying" :class="miniIcon"></i>
+				</div>
 				<div class="control">
 					<i class="icon-playlist"></i>
 				</div>
 			</div>
 		</transition>
+		<audio ref="audio" :src="currentSong.url"></audio>
 	</div>
 </template>
 
@@ -96,14 +99,24 @@
 
 	export default {
 		computed: {
+			playIcon() {
+				return this.playing ? 'icon-pause' : 'icon-play'
+			},
+			miniIcon() {
+				return this.playing ? 'icon-pause-mini' : 'icon-play-mini'
+			},
+			cdCls() {
+				return this.playing ? 'play' : 'play pause'
+			},
 			...mapGetters([
 				'fullScreen',
 				'playList',
-				'currentSong'
+				'currentSong',
+				'playing'
 			])
 		},
 		created() {
-			console.log(80, this.currentSong)
+			console.log(108, this.playing)
 		},
 		methods: {
 			back() {
@@ -169,9 +182,27 @@
 					scale
 				}
 			},
+			togglePlaying() {
+				this.setPlayingState(!this.playing)
+			},
 			...mapMutations({
-				setFullScreen: 'SET_FULL_SCREEN'
+				setFullScreen: 'SET_FULL_SCREEN',
+				setPlayingState: 'SET_PLAYING_STATE'
 			})
+		},
+		watch: {
+			currentSong(newSong) {
+				this.$nextTick(() => {
+					this.$refs.audio.play()
+				})				
+			},
+			playing(newPlaying) {
+				console.log(189, newPlaying)
+				const audio = this.$refs.audio;
+				this.$nextTick(() => {
+					newPlaying ? audio.play() : audio.pause()
+				})
+			}
 		}
 	}
 </script>
@@ -246,11 +277,11 @@
 						top: 0
 						width: 80%
 						height: 100%
+						box-sizing: border-box
 						.cd
 							width: 100%
 							height: 100%
 							box-sizing: border-box
-							border: 10px solid rgba(255, 255, 255, 0.1)
 							border-radius: 50%
 							.image 
 								position: absolute
@@ -259,6 +290,11 @@
 								width: 100%
 								height: 100%
 								border-radius: 50%
+								border: 10px solid rgba(255, 255, 255, 0.1)
+								&.play 
+									animation: rotate 20s linear infinite
+								&.pause
+									animation-play-state: paused
 					.playing-lyric-wrapper
 						width: 80%
 						margin: 30px auto 0
@@ -372,7 +408,7 @@
 			background: $color-highlight-background
 			border: 1px solid red
 			&.mini-enter-active, &.mini-leave-active 
-				transition: all 0.4s
+				transition: all 4s
 			&.mini-enter, &.mini-leave-to 
 				opacity: 0
 			.icon
@@ -395,7 +431,6 @@
 				flex: 1
 				line-height: 20px
 				overflow: hidden
-				border: 1px solid red
 				.name 
 					margin-bottom: 2px
 					no-wrap()
@@ -410,7 +445,6 @@
 				width: 30px
 				padding: 0 10px
 				box-sizing: content-box
-				border: 1px solid red
 				.icon-play-mini, .icon-pause-mini, .icon-playlist
 					font-size: 30px
 					color: $color-theme-d
@@ -422,7 +456,7 @@
 
 
 
-		@keyframes rotate 
+		@keyframes rotate
 			0%
 				transform: rotate(0)
 			100%
