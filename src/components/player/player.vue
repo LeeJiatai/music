@@ -53,14 +53,14 @@
 						<div class="icon i-left">
 							<i class="icon-sequence"></i>
 						</div>
-						<div class="icon i-left">
-							<i class="icon-prev"></i>
+						<div class="icon i-left" :class="disableCls">
+							<i @click="prev" class="icon-prev"></i>
 						</div>
-						<div class="icon i-center">
+						<div class="icon i-center" :class="disableCls">
 							<i @click="togglePlaying" :class="playIcon"></i>
 						</div>
-						<div class="icon i-right">
-							<i class="icon-next"></i>
+						<div class="icon i-right" :class="disableCls">
+							<i @click="next" class="icon-next"></i>
 						</div>
 						<div class="icon i-right">
 							<i class="icon-not-favorite"></i>
@@ -86,7 +86,13 @@
 				</div>
 			</div>
 		</transition>
-		<audio ref="audio" :src="currentSong.url"></audio>
+		<audio 
+			ref="audio" 
+			:src="currentSong.url" 
+			@canplay="ready"
+			@error="error"
+		>
+		</audio>
 	</div>
 </template>
 
@@ -98,6 +104,11 @@
 	const transform = preFixStyle('transform')
 
 	export default {
+		data() {
+			return {
+				songReady: false
+			}
+		},
 		computed: {
 			playIcon() {
 				return this.playing ? 'icon-pause' : 'icon-play'
@@ -108,11 +119,16 @@
 			cdCls() {
 				return this.playing ? 'play' : 'play pause'
 			},
+			disableCls() {
+				console.log(123, this.songReady)
+				return this.songReady ? '' : 'disable'
+			},
 			...mapGetters([
 				'fullScreen',
 				'playList',
 				'currentSong',
-				'playing'
+				'playing',
+				'currentIndex'
 			])
 		},
 		created() {
@@ -185,13 +201,53 @@
 			togglePlaying() {
 				this.setPlayingState(!this.playing)
 			},
+			next() {
+				if(!this.songReady) {
+					return
+				}
+				let index = this.currentIndex + 1;
+				if(index === this.playList.length) {
+					index = 0
+				}
+				this.setCurrentIndex(index);
+				if(!this.playing) {
+					this.togglePlaying();
+				}
+				this.songReady = false
+			},
+			prev() {
+				console.log(221, this.playList)
+				if(!this.songReady) {
+					return
+				}
+				console.log(225, this.currentIndex)
+				let index = this.currentIndex - 1;
+				if(index === -1) {
+					index = this.playList.length - 1
+				}
+				console.log(229, index)
+				this.setCurrentIndex(index);
+				if(!this.playing) {
+					this.togglePlaying();
+				}
+				this.songReady = false;
+			},
+			ready() {
+				this.songReady = true
+				console.log(236, this.songReady)
+			},
+			error() {
+				this.songReady = true
+			},
 			...mapMutations({
 				setFullScreen: 'SET_FULL_SCREEN',
-				setPlayingState: 'SET_PLAYING_STATE'
+				setPlayingState: 'SET_PLAYING_STATE',
+				setCurrentIndex: 'SET_CURRENT_INDEX'
 			})
 		},
 		watch: {
 			currentSong(newSong) {
+				console.log(221, newSong)
 				this.$nextTick(() => {
 					this.$refs.audio.play()
 				})				
@@ -371,7 +427,7 @@
 				.icon
 					flex: 1
 					color: $color-theme
-					&.disabled
+					&.disable
 						color: $color-theme-d
 					i 
 						font-size: 30px

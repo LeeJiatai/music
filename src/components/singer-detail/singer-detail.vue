@@ -9,7 +9,7 @@
     import { mapGetters } from 'vuex'
     import { getSingerDetail } from 'api/singer'
     import { ERR_OK } from 'api/config'
-    import { createSong } from 'common/js/song'
+    import { createSong, isValidMusic } from 'common/js/song'
  
     export default {
         data() {
