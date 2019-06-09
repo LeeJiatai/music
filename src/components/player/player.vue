@@ -238,7 +238,6 @@
 				return `${minute}:${second}`
 			},
 			onProgressbarChange(percent) {
-				console.log(241, percent, this.$refs.audio);
 				const currentTime = this.currentSong.duration * percent;
 				this.$refs.audio.currentTime = currentTime;
 				if(!this.playing) {
