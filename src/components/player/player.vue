@@ -43,11 +43,11 @@
 						<span class="dot"></span>
 					</div>
 					<div class="process-wrapper">
-						<span class="time time-l">444</span>
+						<span class="time time-l">{{formate(currentTime)}}</span>
 						<div class="process-bar-wrapper">
-
+							<progress-bar :percent="percent"></progress-bar>
 						</div>
-						<span class="time time-r">555</span>
+						<span class="time time-r">{{formate(currentSong.duration)}}</span>
 					</div>
 					<div class="operators">
 						<div class="icon i-left">
@@ -91,6 +91,7 @@
 			:src="currentSong.url" 
 			@canplay="ready"
 			@error="error"
+			@timeupdate="updateTime"
 		>
 		</audio>
 	</div>
@@ -100,13 +101,15 @@
 	import { mapGetters, mapMutations } from 'vuex'
 	import animations from 'create-keyframe-animation'
 	import { preFixStyle } from 'common/js/dom'
+	import ProgressBar from 'base/progress-bar/progress-bar'
 
 	const transform = preFixStyle('transform')
 
 	export default {
 		data() {
 			return {
-				songReady: false
+				songReady: false,
+				currentTime: 0,
 			}
 		},
 		computed: {
@@ -120,8 +123,10 @@
 				return this.playing ? 'play' : 'play pause'
 			},
 			disableCls() {
-				console.log(123, this.songReady)
 				return this.songReady ? '' : 'disable'
+			},
+			percent() {
+				return this.currentTime / this.currentSong.duration
 			},
 			...mapGetters([
 				'fullScreen',
@@ -182,22 +187,6 @@
 				this.$refs.cdWrapper.style.transition = ''
         this.$refs.cdWrapper.style[transform] = ''
 			},
-			_getPosAndScale() {
-				const targetWidth = 40;
-				const paddingLeft = 40;
-				const paddingBottom = 30;
-				const paddingTop = 80;
-				const width = window.innerWidth * 0.8;
-				const scale = targetWidth / width;
-				const x = -(window.innerWidth / 2 - paddingLeft);
-				const y = window.innerHeight - paddingTop - width / 2 - paddingBottom;
-				console.log(132, x, y, scale);
-				return{
-					x,
-					y, 
-					scale
-				}
-			},
 			togglePlaying() {
 				this.setPlayingState(!this.playing)
 			},
@@ -239,6 +228,39 @@
 			error() {
 				this.songReady = true
 			},
+			updateTime(e) {
+				this.currentTime = e.target.currentTime;
+			},
+			formate(interval) {
+				interval = interval | 0;
+				const minute = interval / 60 | 0
+				const second = this._pad(interval % 60, 2);
+				return `${minute}:${second}`
+			},
+			_pad(num, n) {
+				let len = num.toString().length;
+				while(len < 2) {
+					num = '0' + num;
+					len++
+				}
+				return num
+			},
+			_getPosAndScale() {
+				const targetWidth = 40;
+				const paddingLeft = 40;
+				const paddingBottom = 30;
+				const paddingTop = 80;
+				const width = window.innerWidth * 0.8;
+				const scale = targetWidth / width;
+				const x = -(window.innerWidth / 2 - paddingLeft);
+				const y = window.innerHeight - paddingTop - width / 2 - paddingBottom;
+				console.log(132, x, y, scale);
+				return{
+					x,
+					y, 
+					scale
+				}
+			},
 			...mapMutations({
 				setFullScreen: 'SET_FULL_SCREEN',
 				setPlayingState: 'SET_PLAYING_STATE',
@@ -259,6 +281,9 @@
 					newPlaying ? audio.play() : audio.pause()
 				})
 			}
+		},
+		components: {
+			ProgressBar
 		}
 	}
 </script>
@@ -406,15 +431,12 @@
 					width: 80%
 					margin: 0 auto 
 					padding: 10px 0
-					display: none
-					border: 1px solid #ffffff
 					.time 
 						color: $color-text
 						font-size: $font-size-small
 						flex: 0 0 30px
 						line-height: 30px
 						width: 30px
-						border: 1px solid red
 						&.time-l	
 							text-align: left
 						&.time-r
