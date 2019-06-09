@@ -45,7 +45,7 @@
 					<div class="process-wrapper">
 						<span class="time time-l">{{formate(currentTime)}}</span>
 						<div class="process-bar-wrapper">
-							<progress-bar :percent="percent"></progress-bar>
+							<progress-bar :percent="percent" @percentChange="onProgressbarChange"></progress-bar>
 						</div>
 						<span class="time time-r">{{formate(currentSong.duration)}}</span>
 					</div>
@@ -236,6 +236,14 @@
 				const minute = interval / 60 | 0
 				const second = this._pad(interval % 60, 2);
 				return `${minute}:${second}`
+			},
+			onProgressbarChange(percent) {
+				console.log(241, percent, this.$refs.audio);
+				const currentTime = this.currentSong.duration * percent;
+				this.$refs.audio.currentTime = currentTime;
+				if(!this.playing) {
+					this.togglePlaying()
+				}
 			},
 			_pad(num, n) {
 				let len = num.toString().length;
