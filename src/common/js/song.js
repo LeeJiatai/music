@@ -1,3 +1,5 @@
+import { getSongsUrl } from 'api/song'
+
 export default class Song {
     constructor({id, mid, singer, name, album, duration, image, url}) {
         this.id = id
@@ -20,7 +22,7 @@ export function createSong(musicData) {
         album: musicData.albumname,
         duration: musicData.interval,
         image: `https://y.gtimg.cn/music/photo_new/T002R300x300M000${musicData.albummid}.jpg?max_age=2592000`,
-        url: `https://dl.stream.qqmusic.qq.com/${musicData.songid}.m4a?fromtag=46`
+        url: musicData.url
     })
 }
 
@@ -43,4 +45,15 @@ export function processSongsUrl(songs) {
     if(!songs.length) {
         return Promise.resolve(songs)
     }
+    return getSongsUrl(songs).then((purMap) => {
+        songs = songs.filter((song) => {
+            const purl = purMap[song.mid];
+            if(purl) {
+                song.url = purl.indexOf('http') === -1 ? `http://dl.stream.qqmusic.qq.com/${purl}` : purl
+                return true
+            }
+            return false
+        })
+        return songs
+    })
 }
