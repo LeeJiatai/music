@@ -229,7 +229,7 @@
 				this.songReady = true
 			},
 			updateTime(e) {
-				this.currentTime = e.target.currentTime;
+				this.currentTime = Math.min(e.target.currentTime, this.currentSong.duration);
 			},
 			formate(interval) {
 				interval = interval | 0;
