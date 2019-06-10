@@ -50,8 +50,8 @@
 						<span class="time time-r">{{formate(currentSong.duration)}}</span>
 					</div>
 					<div class="operators">
-						<div class="icon i-left">
-							<i class="icon-sequence"></i>
+						<div class="icon i-left" @click="changeMode">
+							<i :class="iconMode"></i>
 						</div>
 						<div class="icon i-left" :class="disableCls">
 							<i @click="prev" class="icon-prev"></i>
@@ -105,6 +105,7 @@
 	import { preFixStyle } from 'common/js/dom'
 	import ProgressBar from 'base/progress-bar/progress-bar'
 	import ProgressCircle from 'base/progress-circle/progress-circle'
+	import {playMode} from 'common/js/config'
 
 	const transform = preFixStyle('transform')
 
@@ -132,16 +133,20 @@
 			percent() {
 				return this.currentTime / this.currentSong.duration
 			},
+			iconMode() {
+				return this.mode === playMode.sequence ? 'icon-sequence' : this.mode === playMode.loop ? 'icon-loop' : 'icon-random'
+			},
 			...mapGetters([
 				'fullScreen',
 				'playList',
 				'currentSong',
 				'playing',
-				'currentIndex'
+				'currentIndex',
+				'mode'
 			])
 		},
 		created() {
-			console.log(108, this.playing)
+			console.log(108, this.mode)
 		},
 		methods: {
 			back() {
@@ -175,21 +180,21 @@
 			},
 			afterEnter(el, done) {
 				animations.unregisterAnimation('move')
-        this.$refs.cdWrapper.style.animation = ''
+        		this.$refs.cdWrapper.style.animation = ''
 			},
 			leave(el, done) {
 				this.$refs.cdWrapper.style.transition = 'all 0.4s'
-        const { x, y, scale } = this._getPosAndScale()
+        		const { x, y, scale } = this._getPosAndScale()
 				this.$refs.cdWrapper.style[transform] = `translate3d(${x}px,${y}px,0) scale(${scale})`
-        const timer = setTimeout(done, 400)
-        this.$refs.cdWrapper.addEventListener('transitionend', () => {
-          clearTimeout(timer)
-          done()
+				const timer = setTimeout(done, 400)
+				this.$refs.cdWrapper.addEventListener('transitionend', () => {
+					clearTimeout(timer)
+					done()
 				})
 			},
 			afterLeave(el, done) {	
 				this.$refs.cdWrapper.style.transition = ''
-        this.$refs.cdWrapper.style[transform] = ''
+				this.$refs.cdWrapper.style[transform] = ''
 			},
 			togglePlaying() {
 				this.setPlayingState(!this.playing)
@@ -248,6 +253,12 @@
 					this.togglePlaying()
 				}
 			},
+			changeMode() {
+				console.log(257, this.mode)
+				let mode = (this.mode + 1) % 3;
+				this.setPlayMode(mode);
+				console.log(258, this.mode)
+			},
 			_pad(num, n) {
 				let len = num.toString().length;
 				while(len < 2) {
@@ -275,7 +286,8 @@
 			...mapMutations({
 				setFullScreen: 'SET_FULL_SCREEN',
 				setPlayingState: 'SET_PLAYING_STATE',
-				setCurrentIndex: 'SET_CURRENT_INDEX'
+				setCurrentIndex: 'SET_CURRENT_INDEX',
+				setPlayMode: 'SET_PLAY_MODE'
 			})
 		},
 		watch: {
