@@ -79,7 +79,9 @@
 					<p class="desc" v-html="currentSong.singer"></p>
 				</div>
 				<div class="control">
-					<i @click.stop="togglePlaying" :class="miniIcon"></i>
+					<progress-circle :radius="radius" :percent="percent">  
+						<i @click.stop="togglePlaying" class="icon-mini" :class="miniIcon"></i>
+					</progress-circle>
 				</div>
 				<div class="control">
 					<i class="icon-playlist"></i>
@@ -102,6 +104,7 @@
 	import animations from 'create-keyframe-animation'
 	import { preFixStyle } from 'common/js/dom'
 	import ProgressBar from 'base/progress-bar/progress-bar'
+	import ProgressCircle from 'base/progress-circle/progress-circle'
 
 	const transform = preFixStyle('transform')
 
@@ -110,6 +113,7 @@
 			return {
 				songReady: false,
 				currentTime: 0,
+				radius: 32
 			}
 		},
 		computed: {
@@ -290,7 +294,8 @@
 			}
 		},
 		components: {
-			ProgressBar
+			ProgressBar,
+			ProgressCircle
 		}
 	}
 </script>
@@ -399,7 +404,6 @@
 					width: 100%
 					height: 100%
 					overflow: hidden
-					border: 1px solid red
 					.lyric_wrapper
 						width: 80%
 						margin: 0 auto
@@ -491,7 +495,6 @@
 			width: 100%
 			height: 60px
 			background: $color-highlight-background
-			border: 1px solid red
 			&.mini-enter-active, &.mini-leave-active 
 				transition: all 4s
 			&.mini-enter, &.mini-leave-to 
