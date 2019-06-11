@@ -94,6 +94,7 @@
 			@canplay="ready"
 			@error="error"
 			@timeupdate="updateTime"
+			@ended="end"
 		>
 		</audio>
 	</div>
@@ -106,6 +107,7 @@
 	import ProgressBar from 'base/progress-bar/progress-bar'
 	import ProgressCircle from 'base/progress-circle/progress-circle'
 	import {playMode} from 'common/js/config'
+	import {shuffle} from 'common/js/util'
 
 	const transform = preFixStyle('transform')
 
@@ -142,11 +144,12 @@
 				'currentSong',
 				'playing',
 				'currentIndex',
-				'mode'
+				'mode',
+				'sequenceList'
 			])
 		},
 		created() {
-			console.log(108, this.mode)
+			console.log(108, this.sequenceList)
 		},
 		methods: {
 			back() {
@@ -230,6 +233,18 @@
 				}
 				this.songReady = false;
 			},
+			loop() {
+				this.$refs.audio.currentTime = 0
+				this.$refs.audio.play()
+			},
+			//监听歌曲播放完成
+			end(){
+				if(this.mode === playMode.loop) {
+					this.loop()
+				} else {
+					this.next()
+				}
+			},
 			ready() {
 				this.songReady = true
 				console.log(236, this.songReady)
@@ -253,11 +268,26 @@
 					this.togglePlaying()
 				}
 			},
+			//修改播放模式
 			changeMode() {
-				console.log(257, this.mode)
 				let mode = (this.mode + 1) % 3;
 				this.setPlayMode(mode);
-				console.log(258, this.mode)
+				let list = [];
+				console.log(263, this.sequenceList)
+				if(mode === playMode.random) {
+					list = shuffle(this.sequenceList)
+				} else {
+					list = this.sequenceList
+				}
+				this.resetCurrentIndex(list)
+				this.setPlayList(list)
+			},
+			//修改模式重置currentIndex
+			resetCurrentIndex(list) {
+				let index = list.findIndex((item) => {
+					return item.id === this.currentSong.id
+				})
+				this.setCurrentIndex(index)
 			},
 			_pad(num, n) {
 				let len = num.toString().length;
@@ -287,11 +317,15 @@
 				setFullScreen: 'SET_FULL_SCREEN',
 				setPlayingState: 'SET_PLAYING_STATE',
 				setCurrentIndex: 'SET_CURRENT_INDEX',
-				setPlayMode: 'SET_PLAY_MODE'
+				setPlayMode: 'SET_PLAY_MODE',
+				setPlayList: 'SET_PLAYLIST'
 			})
 		},
 		watch: {
-			currentSong(newSong) {
+			currentSong(newSong, oldSong) {
+				if(newSong.id === oldSong.id) {
+					return
+				}
 				this.$nextTick(() => {
 					this.$refs.audio.play()
 				})				
