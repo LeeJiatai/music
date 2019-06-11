@@ -238,7 +238,7 @@
 				this.songReady = true
 			},
 			updateTime(e) {
-				this.currentTime = Math.min(e.target.currentTime, this.currentSong.duration);
+				this.currentTime = e.target.currentTime;
 			},
 			formate(interval) {
 				interval = interval | 0;
@@ -292,13 +292,11 @@
 		},
 		watch: {
 			currentSong(newSong) {
-				console.log(221, newSong)
 				this.$nextTick(() => {
 					this.$refs.audio.play()
 				})				
 			},
 			playing(newPlaying) {
-				console.log(189, newPlaying)
 				const audio = this.$refs.audio;
 				this.$nextTick(() => {
 					newPlaying ? audio.play() : audio.pause()
