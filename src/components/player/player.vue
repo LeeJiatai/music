@@ -247,7 +247,6 @@
 			},
 			ready() {
 				this.songReady = true
-				console.log(236, this.songReady)
 			},
 			error() {
 				this.songReady = true
@@ -327,7 +326,9 @@
 					return
 				}
 				this.$nextTick(() => {
-					this.$refs.audio.play()
+					console.log(329)
+					this.$refs.audio.play();
+					this.currentSong.getLyric()
 				})				
 			},
 			playing(newPlaying) {

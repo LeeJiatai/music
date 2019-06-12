@@ -2,8 +2,28 @@ import { commonParams, ERR_OK } from './config'
 import { getUid } from 'common/js/uid'
 import axios from 'axios'
 
+//获取歌词
+export function getLyric(mid) {
+  const url = '/api/lyric'
+
+  const data = Object.assign({}, commonParams, {
+    songmid: mid,
+    platform: 'yqq.json',
+    hostUin: 0,
+    needNewCode: 0,
+    format: 'json',
+    notice: 0,
+    pcachetime: +new Date(),
+  })
+  return axios.get(url, {
+    params: data
+  }).then((res) => {
+    return Promise.resolve(res.data)
+  }) 
+}
 
 
+//获取歌曲路径
 export function getSongsUrl(songs) {
   const url = '/api/getPurUrl'
 
