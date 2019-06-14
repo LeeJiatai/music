@@ -260,6 +260,7 @@
 				const second = this._pad(interval % 60, 2);
 				return `${minute}:${second}`
 			},
+			//progress进度条手指触动事件
 			onProgressbarChange(percent) {
 				const currentTime = this.currentSong.duration * percent;
 				this.$refs.audio.currentTime = currentTime;
@@ -288,6 +289,7 @@
 				})
 				this.setCurrentIndex(index)
 			},
+			//补全计时
 			_pad(num, n) {
 				let len = num.toString().length;
 				while(len < 2) {
@@ -296,6 +298,7 @@
 				}
 				return num
 			},
+			//获取坐标和缩放
 			_getPosAndScale() {
 				const targetWidth = 40;
 				const paddingLeft = 40;
