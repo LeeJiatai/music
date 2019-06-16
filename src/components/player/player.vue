@@ -31,7 +31,7 @@
 							</div>
 						</div>
 						<div class="playing-lyric-wrapper">
-							<div class="playing-lyric"></div>
+							<div class="playing-lyric">{{playingLyric}}</div>
 						</div>
 					</div>
 					<scroll class="middle-r" ref="lyricList" :data='currentLyric && currentLyric.lines'>
@@ -134,7 +134,8 @@
 				radius: 32,
 				currentLyric: null,
 				currentLineNum: 0,
-				currentShow: 'cd'
+				currentShow: 'cd',
+				playingLyric: ''
 			}
 		},
 		computed: {
@@ -220,41 +221,53 @@
 			},
 			togglePlaying() {
 				this.setPlayingState(!this.playing)
+				if(this.currentLyric) {
+					this.currentLyric.togglePlay()
+				}
 			},
 			next() {
 				if(!this.songReady) {
 					return
 				}
-				let index = this.currentIndex + 1;
-				if(index === this.playList.length) {
-					index = 0
-				}
-				this.setCurrentIndex(index);
-				if(!this.playing) {
-					this.togglePlaying();
+				if (this.playList.length === 1) {
+					this.loop()
+				} else {
+					let index = this.currentIndex + 1;
+					if(index === this.playList.length) {
+						index = 0
+					}
+					this.setCurrentIndex(index);
+					if(!this.playing) {
+						this.togglePlaying();
+					}
 				}
 				this.songReady = false
 			},
 			prev() {
-				console.log(221, this.playList)
 				if(!this.songReady) {
 					return
 				}
-				console.log(225, this.currentIndex)
-				let index = this.currentIndex - 1;
-				if(index === -1) {
-					index = this.playList.length - 1
-				}
-				console.log(229, index)
-				this.setCurrentIndex(index);
-				if(!this.playing) {
-					this.togglePlaying();
+				if (this.playList.length === 1) {
+					this.loop()
+				} else {
+					let index = this.currentIndex - 1;
+					if(index === -1) {
+						index = this.playList.length - 1
+					}
+					console.log(229, index)
+					this.setCurrentIndex(index);
+					if(!this.playing) {
+						this.togglePlaying();
+					}
 				}
 				this.songReady = false;
 			},
 			loop() {
 				this.$refs.audio.currentTime = 0
 				this.$refs.audio.play()
+				if(this.currentLyric) {
+					this.currentLyric.seek(0)
+				}
 			},
 			//监听歌曲播放完成
 			end(){
@@ -286,6 +299,9 @@
 				if(!this.playing) {
 					this.togglePlaying()
 				}
+				if (this.currentLyric) {
+					this.currentLyric.seek(currentTime * 1000)
+				} 
 			},
 			//修改播放模式
 			changeMode() {
@@ -305,10 +321,13 @@
 			getLyric() {
 				this.currentSong.getLyric().then((lyric) => {
 					this.currentLyric = new Lyric(lyric, this.handleLyric);
-					console.log(292, this.currentLyric)
 					if(this.playing) {
 						this.currentLyric.play()
 					}
+				}).catch(() => {
+					this.currentLyric = null
+					this.playingLyric = ''
+					this.currentLineNum = 0
 				})
 			},
 			//歌词回调函数
@@ -318,7 +337,11 @@
 				if(lineNum > 5) {
 					let lineEl = this.$refs.lyricLine[lineNum - 5]
 					this.$refs.lyricList.scrollToElement(lineEl, 1000)
+				} else {
+					console.log(332)
+					this.$refs.lyricList.scrollTo(0, 0, 1000)
 				}
+				this.playingLyric = txt
 			},
 			//修改模式重置currentIndex
 			resetCurrentIndex(list) {
@@ -420,11 +443,15 @@
 				if(newSong.id === oldSong.id) {
 					return
 				}
-				this.$nextTick(() => {
-					console.log(329)
+				if(this.currentLyric) {
+					this.currentLyric.stop()
+					this.currentTime = 0
+					this.currentLineNum = 0
+				}
+				setTimeout(() => {
 					this.$refs.audio.play();
 					this.getLyric()
-				})				
+				}, 1000)				
 			},
 			playing(newPlaying) {
 				const audio = this.$refs.audio;
