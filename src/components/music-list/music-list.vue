@@ -37,6 +37,7 @@
 	import SongList from 'base/song-list/song-list'
   import Loading from 'base/loading/loading'
   import { preFixStyle } from 'common/js/dom'
+  import { playlistmixin } from 'common/js/mixin'
   import { mapActions } from 'vuex'
 		
   const RESERVED_HEIGHT = 40
@@ -44,6 +45,7 @@
   const backdrop = preFixStyle('backdrop-filter')
 
 	export default {
+    mixins: [playlistmixin],
 		props: {
 			bgImage: {
 				type: String,
@@ -78,6 +80,11 @@
 			}
 		},
 		methods: {
+      handlePlayList(playlist) {
+        const bottom = playlist.length > 0 ? '60px' : ''
+        this.$refs.list.$el.style.bottom = bottom
+        this.$refs.list.refresh()
+      },
 			back() {
 				this.$router.back()
 			},

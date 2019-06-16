@@ -52,7 +52,6 @@
       },
       progressClick(e) {
         const rect = this.$refs.progressBar.getBoundingClientRect();
-        console.log(55, rect)
         const offsetWidth = e.pageX - rect.left;
         this._offset(offsetWidth)
         //当我们点击progressBtn时,e.offsetX取值错误

@@ -332,13 +332,11 @@
 			},
 			//歌词回调函数
 			handleLyric({lineNum, txt}) {
-				console.log(306, lineNum, txt)
 				this.currentLineNum = lineNum
 				if(lineNum > 5) {
 					let lineEl = this.$refs.lyricLine[lineNum - 5]
 					this.$refs.lyricList.scrollToElement(lineEl, 1000)
 				} else {
-					console.log(332)
 					this.$refs.lyricList.scrollTo(0, 0, 1000)
 				}
 				this.playingLyric = txt
@@ -423,7 +421,6 @@
 				const scale = targetWidth / width;
 				const x = -(window.innerWidth / 2 - paddingLeft);
 				const y = window.innerHeight - paddingTop - width / 2 - paddingBottom;
-				console.log(132, x, y, scale);
 				return{
 					x,
 					y, 
