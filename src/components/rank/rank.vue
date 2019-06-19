@@ -1,28 +1,38 @@
 <template>
-    <div class="rank">
-       <div class="toplist">
+    <div class="rank" ref="rank">
+       <scroll class="toplist" :data='topList' ref="topList">
            <ul>
-               <li class="item">
+               <li class="item" v-for="item in topList">
                    <div class="icon">
-                       <img src="" alt="">
+                       <img width="100" height="100" v-lazy="item.picUrl" alt="">
                    </div>
                    <ul class="songlist">
-                       <li class="song"></li>
+                       <li class="song" v-for="(song, index) in item.songList">
+                           <span>{{index + 1}}</span>
+                           <span>{{song.songname}}-{{song.singername}}</span>
+                       </li>
                    </ul>
                </li>
            </ul>
-       </div>
+           <div class="loading-container" v-show="!topList.length">
+               <loading></loading>
+           </div>
+       </scroll>
     </div>
 </template>
 
 <script>
     import { getTopList } from 'api/rank'
     import { ERR_OK } from 'api/config'
- 
+    import Scroll from 'base/scroll/scroll'
+    import Loading from 'base/loading/loading'
+    import { playlistmixin } from 'common/js/mixin'
+  
     export default {
+        mixins: [playlistmixin],
         data() {
             return {
-                
+               topList: [] 
             }
         },
         created() {
@@ -30,14 +40,22 @@
         },
 
         methods: {
+            handlePlayList(playlist) {
+                const bottom = playlist.length > 0 ? '60px' : '' 
+                this.$refs.rank.style.bottom = bottom
+                this.$refs.topList.refresh()
+            },
             _getTopList() {
                 getTopList().then((res) => {
-                    console.log(21, res);
                     if(res.code === ERR_OK) {
-
+                        this.topList = res.data.topList
                     }
                 })
             }
+        },
+        components: {
+            Scroll,
+            Loading
         }
     }
 </script>
@@ -51,7 +69,6 @@
         width: 100%
         top: 88px
         bottom: 0
-        border: 1px solid blue
         .toplist
             width: 100%
             height: 100%
@@ -62,14 +79,12 @@
                 margin: 0 20px
                 padding-top: 20px 
                 box-sizing: content-box
-                border: 1px solid #ffffff
                 &:last-child
                     padding-bottom: 20px
                 .icon 
                     flex: 0 0 100px
                     width: 100px
                     height: 100px
-                    border: 1px solid red
                 .songlist   
                     flex: 1
                     display: flex
@@ -79,8 +94,14 @@
                     background-color: $color-highlight-background
                     flex-direction: column
                     justify-content: center
-                    border: 1px solid red
+                    color: $color-text-d
+                    font-size: $font-size-small
                     .song 
                         no-wrap()
                         line-height: 26px
+            .loading-container
+                position: absolute
+                width: 100%
+                top: 50%
+                transform: translateY(-50%)
 </style>
