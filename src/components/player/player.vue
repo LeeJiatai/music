@@ -169,7 +169,6 @@
 		},
 		created() {
 			this.touch = {}
-			console.log(108, this.sequenceList)
 		},
 		methods: {
 			back() {
