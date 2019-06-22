@@ -23,7 +23,7 @@
 			ref="list"
 		>
 			<div class="song-list-wrapper">
-				<song-list :songs="songs" @select="selectItem"></song-list>
+				<song-list :rank="rank" :songs="songs" @select="selectItem"></song-list>
 			</div>
 			<div class="loading-container" v-show="!songs.length">
 				<loading></loading>
@@ -58,7 +58,11 @@
 			title: {
 				tyep: String,
 				default: ''
-			}
+      },
+      rank: {
+        tyep: Boolean,
+        default: false
+      }
 		},
 		data() {
 			return {
