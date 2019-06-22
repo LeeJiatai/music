@@ -1,13 +1,90 @@
 <template>
-    <div>search</div>
+    <div class="search">
+        <div class="search-box-wrapper">
+            <search-box ref="searchBox" @query='onQueryChange'></search-box>
+        </div>
+        <div class="shortcut-wrapper">
+            <div class="shortcut">
+                <div>
+                    <div class="hot-key">
+                        <h1 class="title">热门搜索</h1>
+                        <ul>
+                            <li class="item" @click="addQuery(item.k)" v-for="item in hotKey">
+                                <span>{{item.k}}</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </template>
 
 <script>
+    import SearchBox from 'base/search-box/search-box'
+    import { getHotKey } from 'api/search'
+    import { ERR_OK } from 'api/config'
+
     export default {
-        
+        data() {
+            return {
+                hotKey: []
+            }
+        },
+        created() {
+            this._getHotKey()
+        },
+        methods: {
+            onQueryChange(query) {
+                console.log(15, query)
+            },
+            addQuery(query) {
+                console.log(42, query);
+                this.$refs.searchBox.setQuery(query);
+            },
+            _getHotKey() {
+                getHotKey().then(res => {
+                    if (ERR_OK === 0) {
+                        this.hotKey = res.data.hotkey.slice(0, 10)
+                    }
+                })
+            }
+        },
+        components: {
+            SearchBox
+        }
     }
 </script>
 
 <style scoped lang="stylus" rel="stylesheet/stylus">
+    @import "~common/stylus/variable"
+    @import "~common/stylus/mixin"
 
+    .search 
+        border: 1px solid blue
+        .search-box-wrapper
+            margin: 20px
+        .shortcut-wrapper
+            position: fixed
+            top: 178px
+            bottom: 0
+            width: 100%
+            .shortcut 
+                height: 100%
+                width: 100%
+                overflow: hidden
+                .hot-key 
+                    margin: 0 20px 20px 20px
+                    .title 
+                        margin-bottom: 20px
+                        color: $color-text-l
+                        font-size: $font-size-medium
+                    .item 
+                        display: inline-block
+                        padding: 5px 10px
+                        margin: 0 20px 10px 0
+                        border-radius: 6px
+                        font-size: $font-size-medium
+                        color: $color-text-d
+                        background: $color-highlight-background
 </style>
