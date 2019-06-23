@@ -28,7 +28,7 @@
     import { ERR_OK } from "api/config"
     import { createSong, isValidMusic, processSongsUrl } from 'common/js/song'
     import Singer from 'common/js/singer'
-    import { mapMutations } from 'vuex'
+    import { mapMutations, mapActions } from 'vuex'
 
 
     const TYPE_SINGER = 'singer'
@@ -112,7 +112,8 @@
                         path: `/search/${singer.id}`
                     })
                     this.setSinger(singer)
-                    console.log(110, singer)
+                } else {
+                    this.insertSong(item)
                 }
             },
             _checkMore(data) {
@@ -143,7 +144,10 @@
             },
             ...mapMutations({
                 setSinger: 'SET_SINGER'
-            })
+            }),
+            ...mapActions([
+                'insertSong'
+            ])
         },
         watch: {
             query() {
