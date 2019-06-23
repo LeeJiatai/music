@@ -7,7 +7,7 @@
         @scrollToEnd='searchMore'
     >
         <ul class="suggest-list">
-            <li class="suggest-item" v-for="item in result"> 
+            <li class="suggest-item" @click="selectItem(item)" v-for="item in result"> 
                 <div class="icon">
                     <i :class="getIconCls(item)"></i>
                 </div>
@@ -27,6 +27,8 @@
     import { search } from "api/search"
     import { ERR_OK } from "api/config"
     import { createSong, isValidMusic, processSongsUrl } from 'common/js/song'
+    import Singer from 'common/js/singer'
+    import { mapMutations } from 'vuex'
 
 
     const TYPE_SINGER = 'singer'
@@ -99,6 +101,20 @@
                     return `${item.name}-${item.singer}`
                 }
             },
+            selectItem(item) {
+                console.log(103, item)
+                if(item.type === TYPE_SINGER) {
+                    const singer = new Singer({
+                        id: item.singermid,
+                        name: item.singername
+                    })
+                    this.$router.push({
+                        path: `/search/${singer.id}`
+                    })
+                    this.setSinger(singer)
+                    console.log(110, singer)
+                }
+            },
             _checkMore(data) {
                 const songs = data.song
                 console.log(88, songs)
@@ -125,6 +141,9 @@
                 })
                 return ret
             },
+            ...mapMutations({
+                setSinger: 'SET_SINGER'
+            })
         },
         watch: {
             query() {
