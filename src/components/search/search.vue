@@ -3,7 +3,7 @@
         <div class="search-box-wrapper">
             <search-box ref="searchBox" @query='onQueryChange'></search-box>
         </div>
-        <div class="shortcut-wrapper">
+        <div class="shortcut-wrapper" v-show="!query">
             <div class="shortcut">
                 <div>
                     <div class="hot-key">
@@ -17,18 +17,23 @@
                 </div>
             </div>
         </div>
+        <div class="search-result" v-show="query">
+            <suggest :query="query"></suggest>
+        </div>
     </div>
 </template>
 
 <script>
     import SearchBox from 'base/search-box/search-box'
+    import Suggest from 'components/suggest/suggest'
     import { getHotKey } from 'api/search'
     import { ERR_OK } from 'api/config'
 
     export default {
         data() {
             return {
-                hotKey: []
+                hotKey: [], 
+                query: ''
             }
         },
         created() {
@@ -36,10 +41,9 @@
         },
         methods: {
             onQueryChange(query) {
-                console.log(15, query)
+                this.query = query
             },
             addQuery(query) {
-                console.log(42, query);
                 this.$refs.searchBox.setQuery(query);
             },
             _getHotKey() {
@@ -51,7 +55,8 @@
             }
         },
         components: {
-            SearchBox
+            SearchBox,
+            Suggest
         }
     }
 </script>
@@ -61,7 +66,6 @@
     @import "~common/stylus/mixin"
 
     .search 
-        border: 1px solid blue
         .search-box-wrapper
             margin: 20px
         .shortcut-wrapper
@@ -87,4 +91,9 @@
                         font-size: $font-size-medium
                         color: $color-text-d
                         background: $color-highlight-background
+        .search-result
+            position: fixed
+            width: 100%
+            top: 178px
+            bottom: 0
 </style>
