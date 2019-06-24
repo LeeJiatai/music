@@ -21,7 +21,6 @@
       text-align: center
       color: $color-theme
       font-size: 0
-      border: 1px solid red
 
       .icon 
         display: inline-block

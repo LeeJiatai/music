@@ -29,7 +29,6 @@
         height 44px
         line-height 44px
         font-size $font-size-medium
-        border 1px solid red
         .tab-item 
             flex 1
             text-align center
