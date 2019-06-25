@@ -60,6 +60,7 @@ export const insertSong = function({commit, state}, song ) {
     }
   }
 
+  //获取列表中播放index
   let currentSIndex = findIndex(sequenceList, currentSong) + 1
   let fsIndex = findIndex(sequenceList, song)
 
