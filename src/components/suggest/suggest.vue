@@ -71,6 +71,7 @@
                     }
                 })
             },
+            //获取更多
             searchMore() {
                 console.log(64)
                 if(!this.hasMore) {
