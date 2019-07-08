@@ -4,6 +4,8 @@
         ref="suggest" 
         :data='result'
         :pullup='pullup'
+        :beforeScroll='beforeScroll'
+        @beforeScroll='listScroll'
         @scrollToEnd='searchMore'
     >
         <ul class="suggest-list">
@@ -17,13 +19,16 @@
             </li>
             <loading v-show="hasMore" title=""></loading>
         </ul>
-
+        <div v-show="!hasMore && !result.length" class="no-result-wrapper">
+            <no-result title="抱歉，暂无搜索结果"></no-result>
+        </div>
     </scroll>
 </template>
 
 <script>
     import Scroll from 'base/scroll/scroll'
     import Loading from 'base/loading/loading'
+    import NoResult from 'base/no-result/no-result'
     import { search } from "api/search"
     import { ERR_OK } from "api/config"
     import { createSong, isValidMusic, processSongsUrl } from 'common/js/song'
@@ -51,6 +56,7 @@
                 page: 1,
                 pullup: true,
                 hasMore: true,
+                beforeScroll: true,
                 result: []
             }
         },
@@ -73,7 +79,6 @@
             },
             //获取更多
             searchMore() {
-                console.log(64)
                 if(!this.hasMore) {
                     return
                 }
@@ -87,6 +92,10 @@
                         console.log(79, this.hasMore)
                     }
                 })
+            },
+            //滚动开始，收起键盘
+            listScroll() {
+                this.$emit('listScroll');
             },
             getIconCls(item) {
                 if(item.type === TYPE_SINGER) {
@@ -119,7 +128,6 @@
             },
             _checkMore(data) {
                 const songs = data.song
-                console.log(88, songs)
                 if(!songs.list.length || (songs.curnum + (songs.curpage - 1) * perpage) > songs.totalnum) {
                     this.hasMore = false
                 }
@@ -157,7 +165,8 @@
         },
         components: {
             Scroll,
-            Loading
+            Loading,
+            NoResult
         }
     }
 </script>
@@ -193,5 +202,9 @@
             top: 50%
             width: 100%
             transform: translateX(-50%)
-
+        .no-result-wrapper 
+            position: absolute
+            width: 100%
+            top: 50%
+            transform: translateY(-50%)
 </style>
