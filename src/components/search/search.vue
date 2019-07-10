@@ -15,6 +15,15 @@
                         </ul>
                     </div>
                 </div>
+                <div class="search-history">
+                    <h1 class="title">
+                        <span class="text">搜索历史</span>
+                        <span class="clear">
+                            <i class="icon-clear"></i>
+                        </span>
+                    </h1>
+                    <search-list :searches="searchHistory"></search-list>
+                </div>
             </div>
         </div>
         <div class="search-result" v-show="query">
@@ -27,9 +36,10 @@
 <script>
     import SearchBox from 'base/search-box/search-box'
     import Suggest from 'components/suggest/suggest'
+    import SearchList from 'base/search-list/search-list'
     import { getHotKey } from 'api/search'
     import { ERR_OK } from 'api/config'
-    import { mapActions } from 'vuex'
+    import { mapActions, mapGetters } from 'vuex'
 
     export default {
         data() {
@@ -37,6 +47,11 @@
                 hotKey: [], 
                 query: ''
             }
+        },
+        computed: {
+           ...mapGetters([
+               'searchHistory'
+           ])
         },
         created() {
             this._getHotKey()
@@ -68,7 +83,8 @@
         },
         components: {
             SearchBox,
-            Suggest
+            Suggest,
+            SearchList
         }
     }
 </script>
@@ -103,6 +119,23 @@
                         font-size: $font-size-medium
                         color: $color-text-d
                         background: $color-highlight-background
+                .search-history 
+                    position relative
+                    margin 0 20px
+                    .title 
+                        display: flex
+                        align-items: center
+                        height: 40px
+                        font-size: $font-size-medium
+                        color: $color-text-l
+                        .text
+                            flex: 1
+                        .clear
+                            extend-click()
+                            .icon-clear
+                                font-size: $font-size-medium
+                                color: $color-text-d
+
         .search-result
             position: fixed
             width: 100%
