@@ -64,6 +64,9 @@
 
         },
         methods: {
+            refresh() {
+                this.$refs.suggest.refresh()
+            },
             search() {
                 this.hasMore = true
                 this.$refs.suggest.scrollTo(0, 0)
