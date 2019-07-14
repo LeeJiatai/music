@@ -3,7 +3,7 @@
         <div class="search-box-wrapper">
             <search-box ref="searchBox" @query='onQueryChange'></search-box>
         </div>
-        <div class="shortcut-wrapper" ref="shortcutWrapper" style="border: 1px solid blue" v-show="!query">
+        <div class="shortcut-wrapper" ref="shortcutWrapper" v-show="!query">
             <scroll class="shortcut" ref="shortcut" :data='shortcut'>
                 <div>
                     <div class="hot-key">
@@ -66,9 +66,7 @@
         },
         methods: {
             handlePlayList(palylist) {
-                console.log(70, palylist)
                 const bottom = palylist.length > 0 ?  '60px' : 0
-                console.log(71, bottom)
             
                 this.$refs.shortcutWrapper.style.bottom = bottom
                 this.$refs.shortcut.refresh()
@@ -175,5 +173,4 @@
             width: 100%
             top: 178px
             bottom: 0
-            border: 1px solid red
 </style>
