@@ -36,7 +36,6 @@ export const randomPlay = function({commit}, {list}) {
 }
 
 export const insertSong = function({commit, state}, song ) {
-  console.log(38, state, song)
   let playlist = state.playList.slice()
   let sequenceList = state.sequenceList.slice()
   let currentIndex = state.currentIndex
@@ -92,4 +91,35 @@ export const deleteSearchHistory = function({commit}, query) {
 
 export const clearSearchHistory = function({commit}, query) {
   commit(types.SET_SEARCH_HISTORY, clearSearch(query))
+}
+
+//删除列表歌曲
+export const deleteSong = function({commit, state}, song) {
+  let playList = state.playList.slice()
+  let sequenceList = state.sequenceList.slice()
+  let currentIndex = state.currentIndex
+
+  let pIndex = findIndex(playList, song)
+  playList.splice(pIndex, 1)
+  let sIndex = findIndex(sequenceList, song);
+  sequenceList.splice(sIndex, 1);
+
+  console.log(99, pIndex, currentIndex)
+
+  if(currentIndex > pIndex || currentIndex === playList.length) {
+    currentIndex--
+  }
+
+  console.log(113, playList, sequenceList)
+
+  commit(types.SET_PLAYLIST, playList)
+  commit(types.SET_SEQUENCE_LIST, sequenceList)
+  commit(types.SET_CURRENT_INDEX, currentIndex)
+  console.log(118, playList.length);
+  if(!playList.length) {
+    commit(types.SET_PLAYING_STATE, false);
+  } else {
+    commit(types.SET_PLAYING_STATE, true);
+  }
+
 }

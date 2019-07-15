@@ -10,18 +10,18 @@
                     </h1>
                 </div>
                 <scroll class="list-content" ref="listContent" :data="sequenceList">
-                    <ul>
-                        <li class="item" v-for="(item, index) in sequenceList" @click="selectItem(item ,index)">
+                    <transition-group ref="list" name="list" tag="ul">
+                        <li class="item" v-for="(item, index) in sequenceList" :key="item.id" @click="selectItem(item ,index)">
                             <i class="current" :class="getCurrentIcon(item)"></i>
                             <span class="text" v-html="item.name"></span>
                             <span class="like">
                                 <i class="icon-not-favorite"></i>
                             </span>
-                            <span class="delete">
+                            <span class="delete" @click.stop="deleteOne(item)">
                                 <i class="icon-delete"></i>
                             </span>
                         </li>
-                    </ul>
+                    </transition-group>
                 </scroll>
                 <div class="list-operate">
                     <div class="add">
@@ -40,7 +40,7 @@
 <script>
     import Scroll from 'base/scroll/scroll'
     import { playMode } from 'common/js/config'
-    import { mapGetters, mapMutations } from 'vuex'
+    import { mapGetters, mapMutations, mapActions } from 'vuex'
 
     export default {
         data() {
@@ -52,18 +52,20 @@
             ...mapGetters([
                 'sequenceList',
                 'currentSong',
-                'playlist'
+                'playList',
+                'mode'
             ])
         },
         created() {
-            console.log(53, this.sequenceList)
+
         },
         methods: {
             show() {
                 this.showFlag = true
                 setTimeout(() => {
                     this.$refs.listContent.refresh()
-                })
+                    this.scrollToCurrent(this.currentSong)
+                }, 20)
             },
             hide() {
                 this.showFlag = false
@@ -74,17 +76,45 @@
                 }
                 return ''
             },
+            //点击歌曲
             selectItem(item, index) {
                 if(this.mode === playMode.random) {
-                    index = this.playlist.findIndex((song) => {
+                    index = this.playList.findIndex((song) => {
                         return song.id === item.id
                     })
                 }
                 this.setCurrentIndex(index)
+                this.setPlayingState(true)
             },
+            //滚动到当前页面
+            scrollToCurrent(current) {
+                const index = this.sequenceList.findIndex((song) => {
+                    return current.id === song.id
+                })
+                this.$refs.listContent.scrollToElement(this.$refs.list.$el.children[index], 300)
+            },
+            //删除歌曲
+            deleteOne(item) {
+                this.deleteSong(item)
+            },
+            ...mapActions([
+                'deleteSong'
+            ]),
             ...mapMutations({
-                'setCurrentIndex': 'SET_CURRENT_INDEX'
+                'setCurrentIndex': 'SET_CURRENT_INDEX',
+                'setPlayingState': 'SET_PLAYING_STATE'
             })
+        },
+        watch: {
+            currentSong(newSong, oldSong) {
+                if(!this.showFlag || newSong.id === oldSong.id) {
+                    return 
+                }
+                setTimeout(() => {
+                    this.$refs.listContent.refresh();
+                    this.scrollToCurrent(newSong);
+                }, 20)
+            }
         },
         components:{
             Scroll
