@@ -42,21 +42,17 @@
     import Scroll from 'base/scroll/scroll'
     import { getHotKey } from 'api/search'
     import { ERR_OK } from 'api/config'
-    import { mapActions, mapGetters } from 'vuex'
-    import { playlistmixin } from 'common/js/mixin'
+    import { mapActions } from 'vuex'
+    import { playlistmixin, searchMixin } from 'common/js/mixin'
 
     export default {
-        mixins: [playlistmixin],
+        mixins: [playlistmixin, searchMixin],
         data() {
             return {
                 hotKey: [], 
-                query: ''
             }
         },
         computed: {
-            ...mapGetters([
-                'searchHistory'
-            ]),
             shortcut() {
                 return this.hotKey.concat(this.searchHistory)
             }
@@ -74,18 +70,6 @@
                 this.$refs.searchResult.style.bottom = bottom
                 this.$refs.suggest.refresh()
             },
-            onQueryChange(query) {
-                this.query = query
-            },
-            addQuery(query) {
-                this.$refs.searchBox.setQuery(query);
-            },
-            blurInput() {
-                this.$refs.searchBox.blur()
-            },
-            saveSearch() {
-                this.saveSearchHistory(this.query)
-            },
             showConfirm() {
                 this.$refs.confirm.show()
             },
@@ -97,8 +81,6 @@
                 })
             },
             ...mapActions([
-                'saveSearchHistory',
-                'deleteSearchHistory',
                 'clearSearchHistory'
             ])
         },
