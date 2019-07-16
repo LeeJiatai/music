@@ -119,16 +119,17 @@
 	import { preFixStyle } from 'common/js/dom'
 	import ProgressBar from 'base/progress-bar/progress-bar'
 	import ProgressCircle from 'base/progress-circle/progress-circle'
-	import {playMode} from 'common/js/config'
-	import {shuffle} from 'common/js/util'
+	import { playMode } from 'common/js/config'
 	import Lyric from 'lyric-parser'
 	import Scroll from 'base/scroll/scroll'
 	import PlayList from 'components/playlist/playlist'
+	import { playerMixin } from 'common/js/mixin'
 
 	const transform = preFixStyle('transform')
 	const transitionDuration = preFixStyle('transitionDuration')
 
 	export default {
+		mixins: [playerMixin],
 		data() {
 			return {
 				songReady: false,
@@ -155,9 +156,6 @@
 			},
 			percent() {
 				return this.currentTime / this.currentSong.duration
-			},
-			iconMode() {
-				return this.mode === playMode.sequence ? 'icon-sequence' : this.mode === playMode.loop ? 'icon-loop' : 'icon-random'
 			},
 			...mapGetters([
 				'fullScreen',
@@ -304,20 +302,6 @@
 					this.currentLyric.seek(currentTime * 1000)
 				} 
 			},
-			//修改播放模式
-			changeMode() {
-				let mode = (this.mode + 1) % 3;
-				this.setPlayMode(mode);
-				let list = [];
-				console.log(263, this.sequenceList)
-				if(mode === playMode.random) {
-					list = shuffle(this.sequenceList)
-				} else {
-					list = this.sequenceList
-				}
-				this.resetCurrentIndex(list)
-				this.setPlayList(list)
-			},
 			//获取歌词
 			getLyric() {
 				this.currentSong.getLyric().then((lyric) => {
@@ -341,13 +325,6 @@
 					this.$refs.lyricList.scrollTo(0, 0, 1000)
 				}
 				this.playingLyric = txt
-			},
-			//修改模式重置currentIndex
-			resetCurrentIndex(list) {
-				let index = list.findIndex((item) => {
-					return item.id === this.currentSong.id
-				})
-				this.setCurrentIndex(index)
 			},
 			//middle触摸事件
 			middleTouchStart(e) {
@@ -434,10 +411,6 @@
 			},
 			...mapMutations({
 				setFullScreen: 'SET_FULL_SCREEN',
-				setPlayingState: 'SET_PLAYING_STATE',
-				setCurrentIndex: 'SET_CURRENT_INDEX',
-				setPlayMode: 'SET_PLAY_MODE',
-				setPlayList: 'SET_PLAYLIST'
 			})
 		},
 		watch: {
