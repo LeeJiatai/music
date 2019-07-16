@@ -442,7 +442,7 @@
 		},
 		watch: {
 			currentSong(newSong, oldSong) {
-				if(newSong.id === oldSong.id) {
+				if(!newSong.id || !newSong.url || newSong.id === oldSong.id) {
 					return
 				}
 				if(this.currentLyric) {

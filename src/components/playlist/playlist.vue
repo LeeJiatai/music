@@ -6,7 +6,9 @@
                     <h1 class="title">
                         <i class="icon"></i>
                         <span class="text"></span>
-                        <span class="clear"></span>
+                        <span class="clear" @click="showConfirm">
+                            <i class="icon-clear"></i>
+                        </span>
                     </h1>
                 </div>
                 <scroll class="list-content" ref="listContent" :data="sequenceList">
@@ -33,6 +35,7 @@
                     <span>关闭</span>
                 </div>
             </div>
+            <confirm ref="confirm" @confirm="confirmClear" text="是否清空播放列表" confirmBtnText="清空"></confirm>
         </div>
     </transition>
 </template>
@@ -40,6 +43,7 @@
 <script>
     import Scroll from 'base/scroll/scroll'
     import { playMode } from 'common/js/config'
+    import Confirm from 'base/confirm/confirm'
     import { mapGetters, mapMutations, mapActions } from 'vuex'
 
     export default {
@@ -94,11 +98,24 @@
                 this.$refs.listContent.scrollToElement(this.$refs.list.$el.children[index], 300)
             },
             //删除歌曲
-            deleteOne(item) {
+            deleteOne(item) {                
                 this.deleteSong(item)
+                if (!this.playList.length) {
+                    this.hide()
+                }
+            },
+            //显示提示框
+            showConfirm() {
+                this.$refs.confirm.show()
+            },
+            //确认清空
+            confirmClear() {
+                this.delateSongList()
+                this.hide()
             },
             ...mapActions([
-                'deleteSong'
+                'deleteSong',
+                'delateSongList'
             ]),
             ...mapMutations({
                 'setCurrentIndex': 'SET_CURRENT_INDEX',
@@ -117,7 +134,8 @@
             }
         },
         components:{
-            Scroll
+            Scroll,
+            Confirm
         }
     }
 </script>
@@ -176,6 +194,10 @@
                     height: 40px
                     padding: 0 30px 0 20px
                     overflow: hidden
+                    &.list-enter-active, &.list-leave-active
+                        transition: all 0.1s
+                    &.list-enter, &.list-leave-to
+                        height: 0
                     .current    
                         flex: 0 0 20px
                         width: 20px
