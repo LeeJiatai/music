@@ -159,12 +159,8 @@
 			},
 			...mapGetters([
 				'fullScreen',
-				'playList',
-				'currentSong',
 				'playing',
 				'currentIndex',
-				'mode',
-				'sequenceList'
 			])
 		},
 		created() {

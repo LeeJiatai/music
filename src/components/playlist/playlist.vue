@@ -4,8 +4,8 @@
             <div class="list-wrapper" @click.stop>
                 <div class="list-header">
                     <h1 class="title">
-                        <i class="icon" :class="iconMode"></i>
-                        <span class="text"></span>
+                        <i class="icon" :class="iconMode" @click="changeMode"></i>
+                        <span class="text">{{modeText}}</span>
                         <span class="clear" @click="showConfirm">
                             <i class="icon-clear"></i>
                         </span>
@@ -45,7 +45,7 @@
     import { playMode } from 'common/js/config'
     import Confirm from 'base/confirm/confirm'
     import { playerMixin } from 'common/js/mixin'
-    import { mapGetters, mapMutations, mapActions } from 'vuex'
+    import { mapActions } from 'vuex'
 
     export default {
         mixins: [playerMixin],
@@ -55,12 +55,9 @@
             }
         },
         computed: {
-            ...mapGetters([
-                'sequenceList',
-                'currentSong',
-                'playList',
-                'mode'
-            ])
+            modeText() {
+                return this.mode === playMode.sequence ? '顺序播放' : this.mode === playMode.random ? '随机播放' : '单曲循环'
+            }
         },
         created() {
 
@@ -119,10 +116,6 @@
                 'deleteSong',
                 'delateSongList'
             ]),
-            ...mapMutations({
-                setCurrentIndex: 'SET_CURRENT_INDEX',
-                setPlayingState: 'SET_PLAYING_STATE'
-            })
         },
         watch: {
             currentSong(newSong, oldSong) {

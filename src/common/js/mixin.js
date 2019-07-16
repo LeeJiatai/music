@@ -31,6 +31,12 @@ export const playerMixin = {
         iconMode() {
             return this.mode === playMode.sequence ? 'icon-sequence' : this.mode === playMode.loop ? 'icon-loop' : 'icon-random'
         },
+        ...mapGetters([
+            'sequenceList',
+            'currentSong',
+            'playList',
+            'mode'
+        ])
     },
     methods: {
         //修改播放模式
@@ -38,7 +44,6 @@ export const playerMixin = {
             let mode = (this.mode + 1) % 3;
             this.setPlayMode(mode);
             let list = [];
-            console.log(263, this.sequenceList)
             if(mode === playMode.random) {
                 list = shuffle(this.sequenceList)
             } else {
