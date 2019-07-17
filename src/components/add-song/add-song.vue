@@ -11,10 +11,13 @@
                 <search-box ref="searchBox" @query='onQueryChange' placeholder="搜索歌曲"></search-box>
             </div>
             <div class="short-cut" v-show="!query">
+                <switches @switch="switchItem" :switches="switches" :currentIndex="currentIndex"></switches>
                 <div class="list-wrapper">
-                    <div class="list-scroll">
-                        <div class="list-inner"></div>
-                    </div>
+                    <scroll class="list-scroll" v-if="currentIndex === 0" :data="playHistory">
+                        <div class="list-inner">
+                            <song-list :songs="playHistory"></song-list>
+                        </div>
+                    </scroll>
                 </div>
             </div>
             <div class="search-result" v-show="query">
@@ -27,8 +30,12 @@
 <script>
     import SearchBox from 'base/search-box/search-box'
     import Suggest from 'components/suggest/suggest'
+    import Switches from 'base/switches/switches'
+    import Scroll from 'base/scroll/scroll'
+    import SongList from 'base/song-list/song-list'
     import { searchMixin } from 'common/js/mixin'
-
+    import { mapGetters } from 'vuex'
+ 
 
     export default {
         mixins: [searchMixin],
@@ -36,7 +43,20 @@
             return {
                 showFlag: false,
                 showSinger: false,
+                switches:[
+                    {name: '最近播放'},
+                    {name: '播放历史'}
+                ],
+                currentIndex: 0
             }
+        },
+        computed: {
+            ...mapGetters([
+                'playHistory'
+            ])
+        },
+        created() {
+            console.log(55, this.playHistory)
         },
         methods: {
             show() {
@@ -48,11 +68,18 @@
             //点解搜索结果
             selectSuggest() {
                 this.saveSearch()
+            },
+            //tab切换
+            switchItem(index) {
+                this.currentIndex = index
             }
         },
         components: {
             SearchBox,
-            Suggest
+            Suggest,
+            Switches,
+            Scroll,
+            SongList
         }
     }
 </script>

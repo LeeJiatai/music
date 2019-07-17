@@ -114,7 +114,7 @@
 </template>
 
 <script>
-	import { mapGetters, mapMutations } from 'vuex'
+	import { mapGetters, mapMutations, mapActions } from 'vuex'
 	import animations from 'create-keyframe-animation'
 	import { preFixStyle } from 'common/js/dom'
 	import ProgressBar from 'base/progress-bar/progress-bar'
@@ -273,7 +273,9 @@
 				}
 			},
 			ready() {
-				this.songReady = true
+				this.songReady = true	
+				console.log(277, this.currentSong)
+				this.savePlayHistory(this.currentSong);
 			},
 			error() {
 				this.songReady = true
@@ -405,6 +407,9 @@
 					scale
 				}
 			},
+			...mapActions([
+				'savePlayHistory'
+			]),
 			...mapMutations({
 				setFullScreen: 'SET_FULL_SCREEN',
 			})
