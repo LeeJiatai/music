@@ -18,7 +18,7 @@
                             <song-list :songs="playHistory" @select="selectSong"></song-list>
                         </div>
                     </scroll>
-                    <scroll ref="searchList" class="list-scroll" v-if="currentIndex === 1" :data="searchHistory">
+                    <scroll ref="searchList" class="list-scroll" v-if="currentIndex === 1" :refreshDelay="refreshDelay" :data="searchHistory">
                         <div class="list-inner">
                             <search-list :searches="searchHistory" @delete="deleteSearchHistory" @select="addQuery"></search-list>
                         </div>
