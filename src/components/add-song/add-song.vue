@@ -13,9 +13,14 @@
             <div class="short-cut" v-show="!query">
                 <switches @switch="switchItem" :switches="switches" :currentIndex="currentIndex"></switches>
                 <div class="list-wrapper">
-                    <scroll class="list-scroll" v-if="currentIndex === 0" :data="playHistory">
+                    <scroll ref="songList" class="list-scroll" v-if="currentIndex === 0" :data="playHistory">
                         <div class="list-inner">
-                            <song-list :songs="playHistory"></song-list>
+                            <song-list :songs="playHistory" @select="selectSong"></song-list>
+                        </div>
+                    </scroll>
+                    <scroll ref="searchList" class="list-scroll" v-if="currentIndex === 1" :data="searchHistory">
+                        <div class="list-inner">
+                            <search-list :searches="searchHistory" @delete="deleteSearchHistory" @select="addQuery"></search-list>
                         </div>
                     </scroll>
                 </div>
@@ -23,6 +28,12 @@
             <div class="search-result" v-show="query">
                 <suggest :query="query" :showSinger="showSinger" @select="selectSuggest" @listScroll="blurInput"></suggest>
             </div>
+            <top-tip ref="topTip">
+                <div class="tip-title">
+                    <i class="icon-ok"></i>
+                    <span class="text">1首歌曲已经添加到播放列表</span>
+                </div>
+            </top-tip>
         </div>
     </transition>
 </template>
@@ -33,8 +44,11 @@
     import Switches from 'base/switches/switches'
     import Scroll from 'base/scroll/scroll'
     import SongList from 'base/song-list/song-list'
+    import SearchList from "base/search-list/search-list"
+    import TopTip from 'base/top-tip/top-tip'
+    import Song from 'common/js/song'
     import { searchMixin } from 'common/js/mixin'
-    import { mapGetters } from 'vuex'
+    import { mapGetters, mapActions } from 'vuex'
  
 
     export default {
@@ -61,6 +75,13 @@
         methods: {
             show() {
                 this.showFlag = true
+                setTimeout(() => {
+                    if(this.currentIndex === 0 ) {
+                        this.$refs.songList.refresh()
+                    } else {
+                        this.$refs.searchList.refresh()
+                    }
+                }, 20)
             },
             hide() {
                 this.showFlag = false
@@ -72,14 +93,26 @@
             //tab切换
             switchItem(index) {
                 this.currentIndex = index
-            }
+            },
+            //点击歌曲
+            selectSong(song, index) {
+                if(index !== 0) {
+                    this.insertSong(new Song(song))
+                    this.$refs.topTip.show()
+                }
+            },
+            ...mapActions([
+                'insertSong'
+            ])
         },
         components: {
             SearchBox,
             Suggest,
             Switches,
             Scroll,
-            SongList
+            SongList,
+            SearchList,
+            TopTip
         }
     }
 </script>
@@ -126,15 +159,22 @@
                 .list-scroll
                     height: 100%
                     overflow: hidden
-                    border: 1px solid blue
                     .list-inner
                         padding: 20px 30px
-                        border: 1px solid red
         .search-result 
             position: fixed
             top: 124px
             bottom: 0
             width: 100%
-            border: 1px solid green
-
+        .tip-title
+            text-align: center
+            padding: 18px 0
+            font-size: 0
+            .icon-ok
+                font-size: $font-size-medium
+                color: $color-theme
+                margin-right: 4px
+            .text
+                font-size: $font-size-medium
+                color: $color-text
 </style>
