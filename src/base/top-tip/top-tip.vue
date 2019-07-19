@@ -22,6 +22,7 @@
         methods: {
             show() {
                 this.showFlag = true
+                //延时隐藏
                 clearTimeout(this.timer)
                 this.timer = setTimeout(() => {
                     this.hide()
