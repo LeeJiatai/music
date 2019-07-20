@@ -1,3 +1,4 @@
+//请求默认数据
 export const commonParams = {
   g_tk: 5381,
   inCharset: 'utf-8',
