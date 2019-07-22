@@ -27,7 +27,7 @@
             }
         },
         created() {
-            console.log(30, this.rank)
+            
         },
         methods: {
             selectItem(item, index) {

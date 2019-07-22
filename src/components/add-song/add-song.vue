@@ -70,7 +70,7 @@
             ])
         },
         created() {
-            console.log(55, this.playHistory)
+            
         },
         methods: {
             show() {
