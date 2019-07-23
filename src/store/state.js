@@ -13,7 +13,7 @@ const state = {
     topList: [],
     searchHistory: loadSearch(),
     playHistory: loadPLay(),
-    favoriteList: loadFavorite
+    favoriteList: loadFavorite()
 }
 
 export default state

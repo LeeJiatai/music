@@ -42,6 +42,7 @@
 									ref="lyricLine"
 									:class="{'current' :index === currentLineNum}"
 									v-for="(item,index) in currentLyric.lines"
+									:key='index'
 								>
 									{{item.txt}}
 								</p>
@@ -75,7 +76,7 @@
 							<i @click="next" class="icon-next"></i>
 						</div>
 						<div class="icon i-right">
-							<i class="icon-not-favorite"></i>
+							<i class="icon" :class="getFavoriteIcon(currentSong)" @click="toggleFavorite(currentSong)"></i>
 						</div>
 					</div>
 				</div>
@@ -173,7 +174,7 @@
 			open(){
 				this.setFullScreen(true)
 			},
-			enter(el, done) {
+ 			enter(el, done) {
 				const {x, y, scale} = this._getPosAndScale()
 				let animation = {
 					0: {
@@ -274,7 +275,6 @@
 			},
 			ready() {
 				this.songReady = true	
-				console.log(277, this.currentSong)
 				this.savePlayHistory(this.currentSong);
 			},
 			error() {
@@ -617,7 +617,7 @@
 						font-size: 40px
 				.i-right
 					text-align: left
-				.i-favorite
+				.icon-favorite
 					color: $color-sub-theme
 			&.normal-enter-active, &.normal-leave-active
 				transition: all 0.4s
