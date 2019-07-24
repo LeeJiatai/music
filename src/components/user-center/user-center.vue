@@ -7,12 +7,21 @@
             <div class="switches-wrapper">
                 <switches :currentIndex='currentIndex' :switches='switches' @switch='switchItem'></switches>
             </div>
-            <div class="play-btn">
+            <div class="play-btn" @click="random">
                 <i class="icon-play"></i>
                 <span class="text">随机播放全部</span>
             </div>
-            <div class="list-wrapper">
-
+            <div class="list-wrapper" ref="listWrapper">
+                <scroll ref="favoriteList" class="list-scroll" v-if="currentIndex === 0" :data="favoriteList">
+                    <div class="list-inner">
+                        <song-list :songs="favoriteList" @select="selectSong"></song-list>
+                    </div>
+                </scroll>
+                <scroll ref="playList" class="list-scroll" v-if="currentIndex === 1" :data="playHistory">
+                    <div class="list-inner">
+                        <song-list :songs="playHistory" @select="selectSong"></song-list>
+                    </div>
+                </scroll>
             </div>
             <div class="no-result-wrapper">
 
@@ -23,8 +32,14 @@
 
 <script>
     import Switches from 'base/switches/switches'
+    import Scroll from 'base/scroll/scroll'
+    import SongList from 'base/song-list/song-list'
+    import Song from 'common/js/song'
+    import { playlistmixin } from 'common/js/mixin'
+    import { mapGetters, mapActions } from 'vuex'
  
     export default {
+        mixins: [playlistmixin],
         data() {
             return {
                 currentIndex: 0,
@@ -38,16 +53,49 @@
                 ]
             }
         },
+        computed: {
+            ...mapGetters([
+                'favoriteList',
+                'playHistory'
+            ])
+        },
         methods: {
             switchItem(index) {
                 this.currentIndex = index
             },
+            selectSong(song) {
+                this.insertSong(new Song(song))
+            },
+            handlePlayList(playList) {
+                const bottom = playList.length > 0 ? '60px' : ''
+                this.$refs.listWrapper.style.bottom = bottom
+                this.$refs.favoriteList && this.$refs.favoriteList.refresh()
+                this.$refs.playList && this.$refs.playList.refresh()
+            },
+            random() {
+                let list = this.currentIndex === 0 ? this.favoriteList : this.playHistory
+                if (list.length === 0) {
+                    return
+                }
+                list = list.map((song) => {
+                    return new Song(song)
+                })
+                this.randomPlay({
+                    list
+                })
+            },
             back() {
                 this.$router.back()
-            }
+            },
+            ...mapActions([
+                'insertSong',
+                'randomPlay'
+            ])
         },
         components: {
-            Switches
+            Switches,
+            Scroll,
+            SongList
         }
     }
 </script>
@@ -97,4 +145,14 @@
                 display: inline-block
                 vertical-align: middle
                 font-size: $font-size-small
+        .list-wrapper
+            position: absolute
+            top: 110px
+            bottom: 0
+            width: 100%
+            .list-scroll
+                height: 100%
+                overflow: hidden
+                .list-inner
+                    padding: 20px 30px
 </style>    

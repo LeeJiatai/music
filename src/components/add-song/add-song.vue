@@ -69,9 +69,6 @@
                 'playHistory'
             ])
         },
-        created() {
-            
-        },
         methods: {
             show() {
                 this.showFlag = true
