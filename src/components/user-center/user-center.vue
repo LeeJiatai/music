@@ -89,6 +89,7 @@
                 this.$refs.favoriteList && this.$refs.favoriteList.refresh()
                 this.$refs.playList && this.$refs.playList.refresh()
             },
+            //随机播放按钮
             random() {
                 let list = this.currentIndex === 0 ? this.favoriteList : this.playHistory
                 if (list.length === 0) {
