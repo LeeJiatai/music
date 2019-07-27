@@ -64,6 +64,7 @@
 
         },
         methods: {
+            //better-scroll初始化
             refresh() {
                 this.$refs.suggest.refresh()
             },
