@@ -25,7 +25,6 @@
             </div>
             <div class="no-result-wrapper" v-show="noResult">
                 <no-result :title="noResultDesc"></no-result>
-                {{noResult}}
             </div>
         </div>
     </transition>
