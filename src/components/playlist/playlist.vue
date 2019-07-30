@@ -76,6 +76,7 @@
             hide() {
                 this.showFlag = false
             },
+            //获取当前播放icon
             getCurrentIcon(item) {
                 if(this.currentSong.id === item.id) {
                     return 'icon-play'
