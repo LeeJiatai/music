@@ -58,6 +58,7 @@
             }
         },
         computed: {
+            //计算播放模式属性
             modeText() {
                 return this.mode === playMode.sequence ? '顺序播放' : this.mode === playMode.random ? '随机播放' : '单曲循环'
             }
