@@ -23,7 +23,7 @@ const devWebpackConfig = merge(baseWebpackConfig, {
   devtool: config.dev.devtool,
 
   // these devServer options should be customized in /config/index.js
-  //跨域请求
+  //跨域请求数据
   devServer: {
     before(app) {
       app.get('/api/getDiscList', function (req, res) {
