@@ -16,6 +16,7 @@
 
 <script>
     export default {
+        //按钮默认值
         props: {
             text: {
                 type: String,
