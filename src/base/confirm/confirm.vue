@@ -43,6 +43,7 @@
             hide() {
                 this.showFlag = false
             },
+            //取消确定按钮事件派发
             cancle() {
                 this.hide()
                 this.$emit('cancle')
