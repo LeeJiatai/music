@@ -41,6 +41,7 @@ const devWebpackConfig = merge(baseWebpackConfig, {
         })
       })
 
+      //获取歌曲URL
       app.post('/api/getPurUrl', bodyParser.json(), function (req, res) {
         const url = 'https://u.y.qq.com/cgi-bin/musicu.fcg'
         axios.post(url, req.body, {
