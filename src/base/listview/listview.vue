@@ -73,6 +73,7 @@
             }
         },
         watch: {
+            //dom渲染出来计算
             data() {
                 setTimeout(() => {
                     this._calculateHeight();
