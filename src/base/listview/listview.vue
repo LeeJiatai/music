@@ -79,6 +79,7 @@
                     this._calculateHeight();
                 }, 20)
             },
+            //y轴滚动
             scrollY(newY) {
                 let listHeight = this.listHeight;
 
