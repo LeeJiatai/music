@@ -30,6 +30,7 @@
             }
         },
         computed: {
+            //计算歌曲百分比
             dashOffset() {
                 return (1 - this.percent) * this.dashArray
             }
