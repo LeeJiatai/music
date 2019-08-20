@@ -22,6 +22,7 @@
             }
         },
         created() {
+            //watch事件
             this.$watch('query', debounce((newQuery) => {
                 this.$emit('query', newQuery)
             }, 200))
